@@ -54,8 +54,10 @@ mypages-web -- 项目目录
 ```
 
 ### 项目演示
-- 在线体验地址：
-- 效果预览图：
+在线体验地址：<br>
+
+效果预览图：<br>
+<img src="https://dd-static.jd.com/ddimg/jfs/t1/164324/3/18381/1292383/607610d7Edca019c3/9dddfac21cf8606e.png" alt="mypages-web 效果预览图" title="mypages-web-preview-long.png" />
 
 ### 技术应用
 技术 | 说明 | 官网
