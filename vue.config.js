@@ -39,20 +39,28 @@ module.exports = {
   },
   devServer: {
     // 环境配置
-    host: "localhost",
-    port: 8080,
+    //host: "localhost",
+    //host: require('ip').address(),
+    host: '0.0.0.0',
+    port: process.env.VUE_APP_BASE_PORT,
     https: false,
     hotOnly: false,
     open: true, //配置自动启动浏览器
     proxy: {
-      // 配置多个代理(配置一个 proxy: 'http://localhost:4000' )
-      "/api": {
-        target: "<url>",
+      // 配置跨域
+      [process.env.VUE_APP_BASE_CROS]: {
+        target: process.env.VUE_APP_BASE_API,
         ws: true,
-        changeOrigin: true
-      },
-      "/foo": {
-        target: "<other_url>"
+        changeOrigin: true, // 设置允许跨域
+        pathRewrite: {
+          /*
+          这个重写不可省略！因为真正请求的地址并不含 /api
+          当在浏览器中看到请求的地址为：http://localhost:8080/api/data/getdata 时，因为重写了 /api，
+          所以实际上访问的地址是：http://x.x.x.x:x/data/getdata
+          */
+          //'^/api': ''
+          ['^' + process.env.VUE_APP_BASE_CROS]: ''
+        }
       }
     }
   },

@@ -1,7 +1,8 @@
 <template>
   <div v-if="platformItem && platformItem.platformBaseInfo" class="platform_item" v-bind:id="platformItem.platformBaseInfo.name">
     <platformName v-if="platformItem.platformBaseInfo"
-                  v-bind:platformBaseInfo="platformItem.platformBaseInfo">
+                  v-bind:platformBaseInfo="platformItem.platformBaseInfo"
+                  v-bind:userFollowingTypeListSize="platformItem.userFollowingTypeList === null ? 0 : platformItem.userFollowingTypeList.length">
     </platformName>
     <platformOpinion v-if="platformItem.platformOpinionList && platformItem.platformOpinionList.length > 0"
                      v-bind:opinions="platformItem.platformOpinionList">

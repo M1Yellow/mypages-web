@@ -5,7 +5,7 @@ import {getToken} from '@/utils/auth'
 
 // 创建axios实例
 const service = axios.create({
-    baseURL: process.env.VUE_APP_BASE_API, // api 请求的 base_url
+    baseURL: process.env.VUE_APP_MOCK === "true" ? "" : process.env.VUE_APP_BASE_CROS, // api 请求的 base_url
     timeout: 5000 // 请求超时时间
 })
 

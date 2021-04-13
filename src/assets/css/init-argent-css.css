@@ -3,41 +3,105 @@
 html {
 
 }
+
 body {
     background-color: #f3f3f3;
 }
-body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,
-fieldset,input,textarea,p,blockquote,th,td {
-    margin:0;
-    padding:0;
+
+/* 全局样式 */
+* {
+    padding: 0;
+    margin: 0;
 }
-table{
-    /*border-collapse:collapse;
-    border-spacing:0;*/
+
+a {
+    text-decoration: none;
+    /*color: #333;*/
+    color: inherit;
 }
-fieldset,img {
-    border:0;
+a:hover, a:visited, a:link, a:active {
+    color: inherit;
 }
-address,caption,cite,code,dfn,em,strong,th,var {
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+input, textarea {
+    outline: none;
+    border: none;
+}
+textarea {
+    resize: none;
+    overflow: auto;
+}
+
+img {
+    border: 0;
+}
+
+button {
+    border: 0;
+    background-color: transparent;
+    outline: none;
+}
+
+select {
+    border: none;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+}
+
+address, caption, cite, code, dfn, em, strong, th, var {
     /*font-style:normal;
     font-weight:normal;*/
 }
-ol,ul,li {
-    list-style:none;
+
+ol, ul, li {
+    list-style: none;
 }
-caption,th {
-    text-align:left;
+
+caption, th {
+    text-align: left;
 }
-h1,h2,h3,h4,h5,h6 {
+
+h1, h2, h3, h4, h5, h6 {
     /*font-size:100%;
     font-weight:normal;*/
 }
-q:before,q:after {
-    content:'';
+
+q:before, q:after {
+    content: '';
 }
-abbr,acronym {
-    border:0;
+
+abbr, acronym {
+    border: 0;
 }
-input,img{
-    border: none;
+
+/* 斜体 */
+i {
+    font-style: normal;
+}
+
+/* 全局自定义样式 */
+/* 更多操作按钮 */
+.more_func {
+    display: flex; /* 弹性布局 */
+    justify-content: center; /* 内容调整 */
+    align-items: center; /* 居中 */
+}
+.more_func_btn {
+    cursor: pointer;
+    font-size: 16px;
+    color: #ccc;
+    transform: rotate(90deg); /* 顺时针旋转90° */
+}
+.el-icon-setting {
+    font-size: 18px;
+}
+/* 下拉框三角 */
+.el-dropdown__popper>.el-popper__arrow {
+    display: none;
 }

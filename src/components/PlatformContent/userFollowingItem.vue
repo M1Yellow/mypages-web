@@ -1,6 +1,8 @@
 <template>
   <div v-if="followingItem.userFollowing" class="following_item">
     <el-row>
+      <!-- Property "circle" was accessed during render but is not defined on instance. -->
+      <!-- webpack 在开发环境热更新时会出现这个问题，很耗系统性能，配置文件修改 NODE_ENV=production -->
       <el-col :span="3" class="following_item_photo_area">
         <a v-if="followingItem.userFollowing.mainPage" v-bind:href="followingItem.userFollowing.mainPage" title="进入主页"
            target="_blank">
@@ -12,7 +14,9 @@
       </el-col>
       <el-col :span="20" class="following_item_desc_area">
         <div v-if="followingItem.userFollowing.name" class="following_item_name_area">
-          <span class="following_item_name">{{ followingItem.userFollowing.name }}</span>
+          <a v-if="followingItem.userFollowing.mainPage" v-bind:href="followingItem.userFollowing.mainPage" target="_blank">
+            <span class="following_item_name">{{ followingItem.userFollowing.name }}</span>
+          </a>
         </div>
         <div v-if="followingItem.userFollowing.signature" class="following_item_signature_area">
           <span class="following_item_signature" :title="followingItem.userFollowing.signature">{{ followingItem.userFollowing.signature }}</span>
@@ -24,31 +28,17 @@
         </div>
       </el-col>
       <el-col :span="1" class="more_func">
-        <el-popover
-            placement="left-start"
-            :width="205"
-            trigger="click"
-            v-model:visible="visible"
-        >
-          <div style="text-align: left; margin: 0">
-            <el-button type="primary" plain size="small" icon="el-icon-search" @click="visible = false">查询更新</el-button>
-            <el-button type="primary" plain size="small" icon="el-icon-refresh" @click="visible = false">同步信息</el-button>
-          </div>
-          <template #reference>
-            <i class="el-icon-more more_func_btn" title="更多操作"></i>
-          </template>
-        </el-popover>
-        <!--
         <el-dropdown>
-          <i class="el-icon-more more_func_btn" title="更多操作"></i>
+          <i class="el-icon-more more_func_btn"></i>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item><i class="el-icon-search"></i>查询更新</el-dropdown-item>
-              <el-dropdown-item><i class="el-icon-refresh"></i>同步信息</el-dropdown-item>
+              <el-dropdown-item v-if="followingItem.userFollowing.isUser"><i class="el-icon-search"></i>查询更新</el-dropdown-item>
+              <el-dropdown-item v-if="followingItem.userFollowing.isUser"><i class="el-icon-refresh"></i>同步信息</el-dropdown-item>
+              <el-dropdown-item><i class="el-icon-edit"></i>编辑关注</el-dropdown-item>
+              <el-dropdown-item><i class="el-icon-delete"></i>移除关注</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
-        -->
       </el-col>
     </el-row>
   </div>
@@ -62,7 +52,7 @@ export default {
   props: ['followingItem'],
   data() {
     return {
-      baseApi: this.$global.OSS_URL,
+      baseApi: process.env.VUE_APP_BASE_API,
       visible: false,
     };
   },
@@ -120,18 +110,6 @@ export default {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-}
-
-.more_func {
-  display: flex; /* 弹性布局 */
-  justify-content: center; /* 内容调整 */
-  align-items: center; /* 居中 */
-}
-
-.more_func_btn {
-  cursor: pointer;
-  color: #ccc;
-  transform: rotate(90deg); /* 顺时针旋转90° */
 }
 
 </style>
