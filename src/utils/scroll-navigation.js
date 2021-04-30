@@ -60,7 +60,7 @@ export function scrollTo(elem) {
     //const targetOffsetTop = document.querySelector(`.content div:nth-child(${index + 1})`).offsetTop;
     const targetOffsetTop = elem.offsetTop - 10; // margin 的距离不算
     // 获取当前 offsetTop
-    let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    let scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop;
     // 定义一次跳 50 个像素，数字越大跳得越快，但是会有掉帧得感觉，步子迈大了会扯到蛋
     const STEP = 70;
     // 判断是往下滑还是往上滑

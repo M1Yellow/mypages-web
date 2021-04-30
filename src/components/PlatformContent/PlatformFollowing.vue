@@ -1,17 +1,17 @@
 <template>
   <div v-if="followings && followings.length > 0" class="platform_following">
-    <userFollowingItem v-for="(followingItem, idx) in followings" v-bind:followingItem="followingItem"></userFollowingItem>
+    <user-following-item v-for="(followingItem, idx) in followings" v-bind:followingItem="followingItem"></user-following-item>
   </div>
 </template>
 
 <script>
-import userFollowingItem from "@/components/PlatformContent/userFollowingItem";
+import UserFollowingItem from "@/components/PlatformContent/UserFollowingItem";
 
 export default {
-  name: "platformFollowing",
+  name: "PlatformFollowing",
   props: ['followings'],
   components: {
-    userFollowingItem
+    UserFollowingItem
   }
 }
 </script>

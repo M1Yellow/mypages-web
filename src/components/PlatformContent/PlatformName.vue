@@ -14,12 +14,26 @@
           <i class="el-icon-setting more_func_btn"></i>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item v-if="userFollowingTypeListSize && userFollowingTypeListSize > 0"><i class="el-icon-search"></i>批量查询更新</el-dropdown-item>
-              <el-dropdown-item v-if="userFollowingTypeListSize && userFollowingTypeListSize > 0"><i class="el-icon-refresh"></i>批量同步信息</el-dropdown-item>
-              <el-dropdown-item><i class="el-icon-plus"></i>添加类型条目</el-dropdown-item>
-              <el-dropdown-item><i class="el-icon-plus"></i>添加平台观点</el-dropdown-item>
-              <el-dropdown-item><i class="el-icon-edit"></i>编辑平台信息</el-dropdown-item>
-              <el-dropdown-item><i class="el-icon-delete"></i>移除平台条目</el-dropdown-item>
+              <el-dropdown-item v-if="userFollowingTypeListSize && userFollowingTypeListSize > 0"
+                                v-on:click="showUnfinishedDialog">
+                <i class="el-icon-search"></i>批量查询更新
+              </el-dropdown-item>
+              <el-dropdown-item v-if="userFollowingTypeListSize && userFollowingTypeListSize > 0"
+                                v-on:click="showUnfinishedDialog">
+                <i class="el-icon-refresh"></i>批量同步信息
+              </el-dropdown-item>
+              <el-dropdown-item v-on:click="showUnfinishedDialog">
+                <i class="el-icon-plus"></i>添加类型条目
+              </el-dropdown-item>
+              <el-dropdown-item v-on:click="showUnfinishedDialog">
+                <i class="el-icon-plus"></i>添加平台观点
+              </el-dropdown-item>
+              <el-dropdown-item v-on:click="showUnfinishedDialog">
+                <i class="el-icon-edit"></i>编辑平台信息
+              </el-dropdown-item>
+              <el-dropdown-item v-on:click="showUnfinishedDialog">
+                <i class="el-icon-delete"></i>移除平台条目
+              </el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -30,7 +44,8 @@
 
 <script>
 export default {
-  name: "platformName",
+  name: "PlatformName",
+  inject: ['showUnfinishedDialog'],
   data() {
     return {
       baseApi: process.env.VUE_APP_BASE_API,

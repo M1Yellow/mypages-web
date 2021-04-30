@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  name: "userFollowingRemarkItem",
+  name: "UserFollowingRemarkItem",
   props: ['followingRemarkItem']
 }
 </script>

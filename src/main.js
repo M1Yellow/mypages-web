@@ -1,4 +1,4 @@
-import { createApp } from "vue";
+import {createApp} from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
@@ -16,6 +16,7 @@ import 'github-markdown-css/github-markdown.css';
 //import '../mock/index.js';
 if (process.env.VUE_APP_MOCK === "true") require('../mock/index.js');
 
+
 const app = createApp(App);
 app.use(store);
 app.use(router);
@@ -23,8 +24,14 @@ app.use(ElementPlus);
 app.use(VueMarkdownIt);
 app.mount('#app');
 
-router.beforeEach((to,from,next) =>{
-    if(to.meta.title){
+
+// 设置全局变量
+//app.config.globalProperties.$addFollowingDialog = addFollowingDialog;
+
+
+// 标签栏标题
+router.beforeEach((to, from, next) => {
+    if (to.meta.title) {
         document.title = to.meta.title
     }
     next();

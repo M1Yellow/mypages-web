@@ -1,11 +1,15 @@
 <template>
   <div v-if="opinionItem" class="platform_opinion_item" v-bind:class="itemStyle" v-on:focusin="changeClass(1)" v-on:focusout="changeClass(0)">
     <el-dropdown trigger="click" placement="bottom-end" visible-arrow="false">
-      <VueMarkdownIt v-if="opinionItem.opinionContent" :source="opinionItem.opinionContent" class="markdown-body"/>
+      <vue-markdown-it v-if="opinionItem.opinionContent" :source="opinionItem.opinionContent" class="markdown-body"/>
       <template #dropdown>
         <el-dropdown-menu>
-          <el-dropdown-item><i class="el-icon-edit"></i>编辑</el-dropdown-item>
-          <el-dropdown-item><i class="el-icon-delete"></i>移除</el-dropdown-item>
+          <el-dropdown-item v-on:click="showUnfinishedDialog">
+            <i class="el-icon-edit"></i>编辑
+          </el-dropdown-item>
+          <el-dropdown-item v-on:click="showUnfinishedDialog">
+            <i class="el-icon-delete"></i>移除
+          </el-dropdown-item>
         </el-dropdown-menu>
       </template>
     </el-dropdown>
@@ -16,8 +20,9 @@
 import VueMarkdownIt from 'vue3-markdown-it';
 
 export default {
-  name: "platformOpinionItem",
+  name: "PlatformOpinionItem",
   props: ['opinionItem', 'idx'],
+  inject: ['showUnfinishedDialog'],
   data() {
     return {
       itemStyle: {}

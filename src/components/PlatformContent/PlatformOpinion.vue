@@ -1,16 +1,16 @@
 <template>
   <div v-if="isShow && opinions && opinions.length > 0" class="platform_opinion">
-    <platformOpinionItem v-for="(opinionItem, idx) in opinions" v-bind:opinionItem="opinionItem" v-bind:idx="idx"></platformOpinionItem>
+    <platform-opinion-item v-for="(opinionItem, idx) in opinions" v-bind:opinionItem="opinionItem" v-bind:idx="idx"></platform-opinion-item>
   </div>
   <div v-if="isShow" class="opinion_up_down"><i class="el-icon-d-arrow-right opinion_up" title="收起" v-on:click="opinionToggle"></i></div>
   <div v-if="!isShow" class="opinion_up_down"><i class="el-icon-d-arrow-left opinion_down" title="展开" v-on:click="opinionToggle"></i></div>
 </template>
 
 <script>
-import platformOpinionItem from "@/components/PlatformContent/platformOpinionItem";
+import PlatformOpinionItem from "@/components/PlatformContent/PlatformOpinionItem";
 
 export default {
-  name: "platformOpinion",
+  name: "PlatformOpinion",
   data() {
     return {
       isShow: true // 是否展开显示，默认是
@@ -18,7 +18,7 @@ export default {
   },
   props: ['opinions'],
   components: {
-    platformOpinionItem
+    PlatformOpinionItem
   },
   methods: {
     opinionToggle(e) {

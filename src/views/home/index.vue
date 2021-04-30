@@ -18,27 +18,33 @@
                v-bind:src="baseApi + platformItem.platformBaseInfo.platformLongLogo"/>
         </li>
         <!-- add platform -->
-        <li v-if="addPlatformShow" id="add-platform" title="新增">
-          <i class="el-icon-circle-plus-outline add-platform-icon"></i>
+        <li v-if="addPlatformShow" id="add-platform">
+          <i class="el-icon-circle-plus-outline add-platform-icon" title="新增" v-on:click="showUnfinishedDialog"></i>
         </li>
       </ul>
     </div>
     <!-- 主内容区域 -->
     <div class="content">
       <div v-if="platformList && platformList.length > 0" class="content_item">
-        <platformItem v-for="platformItem in platformList" v-bind:platformItem="platformItem"></platformItem>
+        <platform-item v-for="platformItem in platformList" v-bind:platformItem="platformItem"></platform-item>
       </div>
     </div>
   </div>
-  <!-- back top -->
-  <BackTop></BackTop>
+
+  <!-- common view components 公共弹窗视图组件 -->
+  <common-item></common-item>
+
+  <!-- back to top 回到顶部 -->
+  <base-back-top></base-back-top>
+
 </template>
 
 <script>
 import {onScroll, scrollTo} from '@/utils/scroll-navigation';
-import platformItem from "@/components/PlatformContent/platformItem";
-import BackTop from "@/components/BackTop";
-import * as homeApi from '@/api/home';
+import CommonItem from "@/components/Common/CommonItem";
+import PlatformItem from "@/components/PlatformContent/PlatformItem";
+import BaseBackTop from "@/components/BaseBackTop";
+import {getJsonData, initAllData} from '@/api/home';
 
 /*
 定义常量、变量
@@ -56,16 +62,24 @@ let navElem; // 获取导航栏元素
 // 暴露默认方法，只能写一个默认方法
 export default {
   components: {
-    platformItem,
-    BackTop
+    CommonItem,
+    PlatformItem,
+    BaseBackTop
   },
   name: 'navPos', // 导航栏滚动定位
   data() {
     return {
+      userId: 1,
       baseApi: process.env.VUE_APP_BASE_API,
       active: 0, // 当前激活的导航索引
       addPlatformShow: false,
       platformList: null
+    }
+  },
+  provide: function () {
+    return {
+      userId: this.userId,
+      showUnfinishedDialog: this.showUnfinishedDialog
     }
   },
   beforeCreate() { // 实例创建之前，初始化事件和生命周期
@@ -130,7 +144,7 @@ export default {
       this.showAddPlatform();
     },
     showAddPlatform() { // 判断 add platform 按钮是否显示
-      if (this.active === menuList.length -1) {
+      if (this.active === menuList.length - 1) {
         this.addPlatformShow = true;
       } else {
         this.addPlatformShow = false;
@@ -146,12 +160,14 @@ export default {
       }
     },
     getData() {
-      let params = {}
+      let params = {
+        userId: this.userId
+      };
       //console.log(">>>> initAllData...");
       if (process.env.VUE_APP_MOCK === "true") {
         // 【本地环境】获取本地 json 文件数据
         console.log(">>>> homeApi.getJsonData");
-        homeApi.getJsonData("/json/home/platformList.json").then(response => {
+        getJsonData("/json/home/platformList.json").then(response => {
           //console.log(response);
           this.platformList = response.data;
         }).catch(e => {
@@ -160,12 +176,19 @@ export default {
       } else {
         // 【测试、开发、正式环境】请求接口数据
         //console.log(">>>> homeApi.initAllData");
-        homeApi.initAllData(params).then(response => {
+        initAllData(params).then(response => {
           this.platformList = response.data;
         }).catch(e => {
           console.log(e);
         });
       }
+    },
+    showUnfinishedDialog() { // 全局提示 “功能未完成”
+      //alert("非常抱歉！此功能暂未实现。\nSorry! Please wait some time.");
+      this.$message({
+        showClose: true,
+        message: "非常抱歉！此功能暂未实现。\nSorry! Please wait some time."
+      });
     }
   }
 }
@@ -244,14 +267,19 @@ export default {
   align-items: center;
   padding: 5px 20px 5px 20px;
   font-size: 24px;
-  cursor: pointer;
   line-height: 50px;
   height: 50px;
   font-weight: 600;
 }
-#add-platform>.add-platform-icon {
+
+#add-platform > .add-platform-icon {
   font-size: 36px;
   color: #ccc;
+  cursor: pointer;
+}
+
+#add-platform > .add-platform-icon:hover {
+  color: #409eff;
 }
 
 </style>
