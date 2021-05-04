@@ -1,5 +1,7 @@
 import {createStore} from "vuex";
+import globalProperties from "@/store/modules/globalProperties";
 import userFollowing from "@/store/modules/userFollowing";
+import userFollowingRelation from "@/store/modules/userFollowingRelation";
 import userFollowingRemark from "@/store/modules/userFollowingRemark";
 import userPlatform from "@/store/modules/userPlatform";
 
@@ -27,7 +29,9 @@ export default createStore({
     mutations: {},
     actions: {},
     modules: {
+        globalProperties,
         userFollowing,
+        userFollowingRelation,
         userFollowingRemark,
         userPlatform
     }

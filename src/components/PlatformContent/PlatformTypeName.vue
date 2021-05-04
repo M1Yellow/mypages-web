@@ -56,8 +56,9 @@ export default {
   components: {},
   methods: {
     addFollowing(userId, platformId, typeId) {
-      //console.log(platformId, typeId);
       this.$store.commit('SET_USER_FOLLOWING_DIALOG_VISIBLE', true);
+      this.$store.commit('SET_USER_FOLLOWING_DIALOG_TYPE', 1);
+      this.$store.commit('SET_USER_FOLLOWING_DIALOG_TITLE', '添加关注');
       this.$store.commit('SET_USER_FOLLOWING_VIEW_EDIT', this.$store.state.userFollowing.newFollowing);
       this.$store.commit('SET_USER_FOLLOWING_NEW_BACK', getNewObjByJson(this.$store.state.userFollowing.newFollowing));
       this.$store.commit('SET_USER_FOLLOWING_NEW_USER_ID', userId);

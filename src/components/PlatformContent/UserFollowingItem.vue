@@ -44,6 +44,9 @@
               <el-dropdown-item v-on:click="editFollowing(followingItem)">
                 <i class="el-icon-edit"></i>编辑关注
               </el-dropdown-item>
+              <el-dropdown-item v-on:click="changeType(followingItem.userFollowing)">
+                <i class="el-icon-collection-tag"></i>变更分组
+              </el-dropdown-item>
               <el-dropdown-item
                   v-on:click="removeFollowing(followingItem, followingItem.userFollowing.userId, followingItem.userFollowing.followingId, followingItem.userFollowing.name)">
                 <i class="el-icon-delete"></i>移除关注
@@ -82,7 +85,6 @@ export default {
     },
     // 更新用户信息
     syncFollowingInfo(followingItem, userId, fuid, name) {
-      //console.log(fuid, name);
       this.beforeOperation(followingItem);
       this.$confirm('确认同步用户【' + name + '】的信息？', '提示', {
         confirmButtonText: '确定',
@@ -102,8 +104,13 @@ export default {
       });
     },
     doSyncFollowingInfo(params) {
+      if (process.env.VUE_APP_ENV !== "prod") {
+        console.log(">>>> syncFollowingInfo params: ", JSON.stringify(params));
+      }
       syncFollowingInfo(params).then(res => {
-        //console.log(">>>> syncFollowingInfo response:", res);
+        if (process.env.VUE_APP_ENV !== "prod") {
+          console.log(">>>> syncFollowingInfo response: ", JSON.stringify(res));
+        }
         if (res.code === 200) {
           // 更新成功，直接替换绑定对象内容，动态更新
           // 页面对象
@@ -118,9 +125,14 @@ export default {
           // 进一步处理头像文件，在文件后面添加随机参数（?v=随机数）即可。如果文件路径没有变动，是不会触发页面更新的，这里需要重新加载用户头像文件，
           // 因为原来的文件可能不存在，同步之后文件又有了，必须触发动态加载
           if (pageFollowingItem.userFollowing.profilePhoto) {
+            // 在文件后面添加版本参数，还是有一点问题，加载还是不顺利，设置链接值抖动的方式，先加版本参数，再去掉，触发页面动态加载
+            let profilePhotoBack = pageFollowingItem.userFollowing.profilePhoto;
             let randomNum = getRandomNum(100000, 999999);
             let param = '?v=' + randomNum;
             pageFollowingItem.userFollowing.profilePhoto = pageFollowingItem.userFollowing.profilePhoto + param;
+            setTimeout(() => {
+              pageFollowingItem.userFollowing.profilePhoto = profilePhotoBack;
+            }, 100);
           }
           //console.log(">>>> pageFollowingItem: ", JSON.stringify(pageFollowingItem));
 
@@ -162,8 +174,13 @@ export default {
       });
     },
     doRemoveFollowing(params) {
+      if (process.env.VUE_APP_ENV !== "prod") {
+        console.log(">>>> removeFollowing params: ", JSON.stringify(params));
+      }
       removeFollowing(params).then(res => {
-        //console.log(">>>> removeFollowing response:", res);
+        if (process.env.VUE_APP_ENV !== "prod") {
+          console.log(">>>> removeFollowing response: ", JSON.stringify(res));
+        }
         if (res.code === 200) {
           // 移除成功，直接替换绑定对象内容，动态更新
           // 页面对象
@@ -222,7 +239,24 @@ export default {
         this.$store.commit('SET_USER_FOLLOWING_NEW_BACK', getNewObjByJson(this.$store.state.userFollowing.newFollowing));
       }
       //console.log(JSON.stringify(this.$store.state.userFollowing.userFollowingEdit));
-    }
+    },
+    // 修改类型分组
+    changeType(userFollowing) {
+      this.setUserFollowingRelation(userFollowing);
+    },
+    setUserFollowingRelation(userFollowing) {
+      // 对象克隆，断开与原始对象的地址引用
+      let following = getNewObjByJson(userFollowing); // json 先序列化，再反序列化为对象
+      if (following) {
+        // 设置编辑信息
+        this.$store.commit('SET_USER_FOLLOWING_RELATION_DIALOG_VISIBLE', true);
+        this.$store.commit('SET_USER_FOLLOWING_RELATION_DIALOG_TYPE', 1);
+        this.$store.commit('SET_USER_FOLLOWING_RELATION_DIALOG_TITLE', '变更分组');
+        this.$store.commit('SET_USER_FOLLOWING_RELATION_VIEW_EDIT', following);
+        this.$store.commit('SET_USER_FOLLOWING_RELATION_NEW_BACK', getNewObjByJson(this.$store.state.userFollowingRelation.newFollowingRelation));
+      }
+      //console.log(JSON.stringify(this.$store.state.userFollowingRelation.userFollowingRelationEdit));
+    },
   }
 }
 </script>

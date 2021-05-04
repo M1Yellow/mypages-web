@@ -24,7 +24,7 @@
         </el-form-item>
         <el-form-item label="排序优先级" prop="sortNo">
           <el-select class="add_following_sort" v-model="userFollowing.sortNo" placeholder="-请选择-">
-            <el-option v-for="val in addFollowingSortValues" :label="val" :value="val"></el-option>
+            <el-option v-for="val in sortValues" :label="val" :value="val"></el-option>
           </el-select>
           <span class="add_following_desc">（决定用户的显示顺序，10：优先级最高）</span>
         </el-form-item>
@@ -136,8 +136,8 @@ export default {
       //profile: null,
       // 标签列表（临时存储）
       //remarks: this.userFollowing.remarkList,
-      // 排序值
-      addFollowingSortValues: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      // 排序优先级，[1, 10] 优先级逐渐递增
+      sortValues: [],
       // 新增标签
       inputVisible: false,
       inputValue: '',
@@ -168,7 +168,8 @@ export default {
     }
   },
   // 属性计算
-  computed: { // TODO 注意，这里面的方法会多次调用！！因为 v-mode 为双向绑定，方法内的属性变了，方法会再次执行
+  // TODO 注意，这里面的方法会多次调用！！因为 v-mode 为双向绑定，方法内的属性变了，方法会再次执行，造成方法抖动现象
+  computed: {
     getDialogVisible() {
       if (this.$store.state.userFollowing.dialogVisible) { // 为 true，即显示弹窗时，才初始数据
         // 初始化一些数据
@@ -180,16 +181,21 @@ export default {
       return this.$store.state.userFollowing.dialogTitle;
     },
     getUserFollowing() {
-      if (!this.$store.state.userFollowing.userFollowingEdit) { // userFollowingEdit 为 null
-        return this.$store.state.userFollowing.newFollowing;
+      if (this.$store.state.userFollowing.userFollowingEdit) {
+        return this.$store.state.userFollowing.userFollowingEdit;
       }
-      return this.$store.state.userFollowing.userFollowingEdit;
-    }
+      return this.$store.state.userFollowing.newFollowing;
+    },
+    getSortValues() {
+      return this.$store.state.globalProperties.sortValues;
+    },
   },
   methods: {
     initData() {
       // 获取编辑用户数据
       this.userFollowing = this.getUserFollowing;
+      // 获取排序优先级
+      this.sortValues = this.getSortValues;
       // 备份原来的标签，避免重复添加
       this.backRemarkList();
       //console.log(">>>> isFileSelected: ", this.isFileSelected);
@@ -212,7 +218,7 @@ export default {
 
       // 校验必须参数
       if (!this.userFollowing.userId) {
-        this.$message.error('用户类型错误');
+        this.$message.error('用户id错误');
         return false;
       }
       if (!this.userFollowing.platformId) {
@@ -306,14 +312,21 @@ export default {
     },
     handleClose(tag) {
       //console.log(">>>> before remove:" + JSON.stringify(this.userFollowing.remarkList));
-      if (this.userFollowing.remarkList === null) {
-        this.userFollowing.remarkList = [];
-      }
-      if (this.userFollowing.remarkList.length < 1) {
-        return;
-      }
-      this.userFollowing.remarkList.splice(this.userFollowing.remarkList.indexOf(tag), 1);
-      //console.log(">>>> after remove:" + JSON.stringify(this.userFollowing.remarkList));
+      this.$confirm('确认移除【' + tag.labelName + '】标签？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        showClose: false,
+        type: 'warning'
+      }).then(() => {
+        if (this.userFollowing.remarkList === null) {
+          this.userFollowing.remarkList = [];
+        }
+        if (this.userFollowing.remarkList.length < 1) {
+          return;
+        }
+        this.userFollowing.remarkList.splice(this.userFollowing.remarkList.indexOf(tag), 1);
+        //console.log(">>>> after remove:" + JSON.stringify(this.userFollowing.remarkList));
+      });
     },
     showInput() {
       this.inputVisible = true;
@@ -454,15 +467,18 @@ export default {
 
     },
     doAddFollowing(formData) {
-
       // 发起请求
-      console.log(">>>> formData:\n");
-      for (let key of formData.keys()) {
-        console.log(key + " = " + formData.get(key));
+      if (process.env.VUE_APP_ENV !== "prod") {
+        console.log(">>>> formData:\n");
+        for (let key of formData.keys()) {
+          console.log(key + " = " + formData.get(key));
+        }
       }
 
       addFollowing(formData).then(res => {
-        console.log(">>>> Add following response:", res);
+        if (process.env.VUE_APP_ENV !== "prod") {
+          console.log(">>>> Add following response:", JSON.stringify(res));
+        }
         if (res.code === 200) {
 
           this.$message({

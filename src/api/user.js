@@ -1,5 +1,6 @@
 import request from '@/utils/request'
-import qs from 'qs';
+
+//import qs from 'qs';
 
 /**
  * vue 中 post 请求报 400 的解决
@@ -37,6 +38,30 @@ export function syncFollowingInfo(params) {
 export function syncFollowingInfoBatch(params) {
     return request({
         url: '/following/syncBatch',
+        method: 'get',
+        params: params
+    });
+}
+
+export function changType(params) {
+    return request({
+        url: '/following-relation/add',
+        method: 'post',
+        data: params
+    });
+}
+
+export function getPlatformList(params) {
+    return request({
+        url: '/platform/list',
+        method: 'get',
+        params: params
+    });
+}
+
+export function getTypeList(params) {
+    return request({
+        url: '/type/list',
         method: 'get',
         params: params
     });

@@ -1,15 +1,23 @@
 import request from '@/utils/request'
 
-export function initAllData(params) {
+export function getJsonData(filePath) {
     return request({
-        url:'/home/platformList',
-        method:'get',
-        params:params
+        url: filePath
     });
 }
 
-export function getJsonData(filePath) {
+export function initAllData(params) {
     return request({
-        url:filePath
+        url: '/home/platformList',
+        method: 'get',
+        params: params
+    });
+}
+
+export function getGlobalProperties(params) {
+    return request({
+        url: '/home/properties',
+        method: 'get',
+        params: params
     });
 }
