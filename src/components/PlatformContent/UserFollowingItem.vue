@@ -38,7 +38,9 @@
                 <i class="el-icon-search"></i>查询更新
               </el-dropdown-item>
               <el-dropdown-item v-if="followingItem.userFollowing.isUser"
-                                v-on:click="syncFollowingInfo(followingItem, followingItem.userFollowing.userId, followingItem.userFollowing.followingId, followingItem.userFollowing.name)">
+                                v-on:click="syncFollowingInfo(followingItem, followingItem.userFollowing.userId,
+                                followingItem.userFollowing.platformId, followingItem.userFollowing.typeId,
+                                followingItem.userFollowing.followingId, followingItem.userFollowing.name)">
                 <i class="el-icon-refresh"></i>同步信息
               </el-dropdown-item>
               <el-dropdown-item v-on:click="editFollowing(followingItem)">
@@ -48,7 +50,9 @@
                 <i class="el-icon-collection-tag"></i>变更分组
               </el-dropdown-item>
               <el-dropdown-item
-                  v-on:click="removeFollowing(followingItem, followingItem.userFollowing.userId, followingItem.userFollowing.followingId, followingItem.userFollowing.name)">
+                  v-on:click="removeFollowing(followingItem, followingItem.userFollowing.userId,
+                  followingItem.userFollowing.platformId, followingItem.userFollowing.typeId,
+                  followingItem.userFollowing.followingId, followingItem.userFollowing.name)">
                 <i class="el-icon-delete"></i>移除关注
               </el-dropdown-item>
             </el-dropdown-menu>
@@ -62,7 +66,8 @@
 <script>
 import UserFollowingRemarkItem from "@/components/PlatformContent/UserFollowingRemarkItem";
 import {removeFollowing, syncFollowingInfo} from '@/api/user';
-import {getNewObjByJson, getRandomNum} from '@/utils/index';
+import {getRandomNum} from '@/utils/index';
+import {mapActions} from "vuex";
 
 export default {
   name: "UserFollowingItem",
@@ -78,13 +83,34 @@ export default {
     UserFollowingRemarkItem
   },
   methods: {
+    ...mapActions({
+      // 变更用户类型
+      setRelationDialogVisible: 'userFollowingRelation/setDialogVisible',
+      setRelationDialogType: 'userFollowingRelation/setDialogType',
+      setRelationDialogTitle: 'userFollowingRelation/setDialogTitle',
+      setRelationInstanceUserId: 'userFollowingRelation/setInstanceUserId',
+      setRelationInstancePlatformId: 'userFollowingRelation/setInstancePlatformId',
+      setRelationInstanceTypeId: 'userFollowingRelation/setInstanceTypeId',
+      setRelationViewItem: 'userFollowingRelation/setViewItem',
+
+      // 新增或编辑关注用户
+      setFollowingDialogVisible: 'userFollowing/setDialogVisible',
+      setFollowingDialogType: 'userFollowing/setDialogType',
+      setFollowingDialogTitle: 'userFollowing/setDialogTitle',
+      setFollowingInstanceUserId: 'userFollowing/setInstanceUserId',
+      setFollowingInstancePlatformId: 'userFollowing/setInstancePlatformId',
+      setFollowingInstanceTypeId: 'userFollowing/setInstanceTypeId',
+      setFollowingViewItem: 'userFollowing/setViewItem',
+
+    }),
     // 增、删、改操作之前
     beforeOperation(followingItem) {
       // 保存一份页面数据对象的引用
-      this.$store.commit('SET_USER_FOLLOWING_VIEW_ITEM', followingItem);
+      //this.$store.commit('SET_USER_FOLLOWING_VIEW_ITEM', followingItem);
+      this.setFollowingViewItem(followingItem);
     },
     // 更新用户信息
-    syncFollowingInfo(followingItem, userId, fuid, name) {
+    syncFollowingInfo(followingItem, userId, platformId, typeId, followingId, name) {
       this.beforeOperation(followingItem);
       this.$confirm('确认同步用户【' + name + '】的信息？', '提示', {
         confirmButtonText: '确定',
@@ -95,7 +121,9 @@ export default {
         // 封装参数
         let params = {
           userId: userId,
-          fuid: fuid
+          platformId: platformId,
+          typeId: typeId,
+          followingId: followingId
         }
         // 执行同步
         this.doSyncFollowingInfo(params);
@@ -105,36 +133,36 @@ export default {
     },
     doSyncFollowingInfo(params) {
       if (process.env.VUE_APP_ENV !== "prod") {
-        console.log(">>>> syncFollowingInfo params: ", JSON.stringify(params));
+        console.log(">>>> syncFollowingInfo params:", JSON.stringify(params));
       }
       syncFollowingInfo(params).then(res => {
         if (process.env.VUE_APP_ENV !== "prod") {
-          console.log(">>>> syncFollowingInfo response: ", JSON.stringify(res));
+          console.log(">>>> syncFollowingInfo response:", JSON.stringify(res));
         }
         if (res.code === 200) {
           // 更新成功，直接替换绑定对象内容，动态更新
           // 页面对象
-          let pageFollowingItem = this.$store.state.userFollowing.followingItem;
-          //console.log(">>>> pageFollowingItem: ", JSON.stringify(pageFollowingItem));
+          let pageItem = this.$store.state.userFollowing.viewItem;
+          //console.log(">>>> pageItem:", JSON.stringify(pageItem));
           // 接口返回对象
-          let returnFollowingItem = res.data;
-          //console.log(">>>> returnFollowingItem: ", JSON.stringify(returnFollowingItem));
-          pageFollowingItem.userFollowing = returnFollowingItem.userFollowing;
+          let returnItem = res.data;
+          //console.log(">>>> returnItem:", JSON.stringify(returnItem));
+          pageItem.userFollowing = returnItem.userFollowing;
           // 没有同步标签，这一步不用管
-          //pageFollowingItem.userFollowingRemarkList = returnFollowingItem.userFollowingRemarkList;
+          //pageItem.userFollowingRemarkList = returnItem.userFollowingRemarkList;
           // 进一步处理头像文件，在文件后面添加随机参数（?v=随机数）即可。如果文件路径没有变动，是不会触发页面更新的，这里需要重新加载用户头像文件，
           // 因为原来的文件可能不存在，同步之后文件又有了，必须触发动态加载
-          if (pageFollowingItem.userFollowing.profilePhoto) {
+          if (pageItem.userFollowing.profilePhoto) {
             // 在文件后面添加版本参数，还是有一点问题，加载还是不顺利，设置链接值抖动的方式，先加版本参数，再去掉，触发页面动态加载
-            let profilePhotoBack = pageFollowingItem.userFollowing.profilePhoto;
+            let profilePhotoBack = pageItem.userFollowing.profilePhoto;
             let randomNum = getRandomNum(100000, 999999);
             let param = '?v=' + randomNum;
-            pageFollowingItem.userFollowing.profilePhoto = pageFollowingItem.userFollowing.profilePhoto + param;
+            pageItem.userFollowing.profilePhoto = pageItem.userFollowing.profilePhoto + param;
             setTimeout(() => {
-              pageFollowingItem.userFollowing.profilePhoto = profilePhotoBack;
+              pageItem.userFollowing.profilePhoto = profilePhotoBack;
             }, 100);
           }
-          //console.log(">>>> pageFollowingItem: ", JSON.stringify(pageFollowingItem));
+          //console.log(">>>> pageItem:", JSON.stringify(pageItem));
 
           this.$message({
             type: "success",
@@ -152,10 +180,12 @@ export default {
           });
         }
       }).catch(e => {
-        console.log(e);
+        if (process.env.VUE_APP_ENV !== "prod") {
+          console.log(e);
+        }
       });
     },
-    removeFollowing(followingItem, userId, followingId, name) {
+    removeFollowing(followingItem, userId, platformId, typeId, followingId, name) {
       this.beforeOperation(followingItem);
       this.$confirm('确认移除关注用户【' + name + '】？', '提示', {
         confirmButtonText: '确定',
@@ -166,6 +196,8 @@ export default {
         // 封装参数
         let params = {
           userId: userId,
+          platformId: platformId,
+          typeId: typeId,
           followingId: followingId
         }
         this.doRemoveFollowing(params);
@@ -175,22 +207,22 @@ export default {
     },
     doRemoveFollowing(params) {
       if (process.env.VUE_APP_ENV !== "prod") {
-        console.log(">>>> removeFollowing params: ", JSON.stringify(params));
+        console.log(">>>> removeFollowing params:", JSON.stringify(params));
       }
       removeFollowing(params).then(res => {
         if (process.env.VUE_APP_ENV !== "prod") {
-          console.log(">>>> removeFollowing response: ", JSON.stringify(res));
+          console.log(">>>> removeFollowing response:", JSON.stringify(res));
         }
         if (res.code === 200) {
           // 移除成功，直接替换绑定对象内容，动态更新
           // 页面对象
-          let pageFollowingItem = this.$store.state.userFollowing.followingItem;
-          //console.log(">>>> pageFollowingItem: ", JSON.stringify(pageFollowingItem));
+          let pageItem = this.$store.state.userFollowing.viewItem;
+          //console.log(">>>> pageItem:", JSON.stringify(pageItem));
           // 接口返回对象
-          //let returnFollowingItem = res.data;
-          //console.log(">>>> returnFollowingItem: ", JSON.stringify(returnFollowingItem));
-          pageFollowingItem.userFollowing = null;
-          pageFollowingItem.userFollowingRemarkList = null;
+          //let returnItem = res.data;
+          //console.log(">>>> returnItem:", JSON.stringify(returnItem));
+          pageItem.userFollowing = null;
+          pageItem.userFollowingRemarkList = null;
 
           this.$message({
             type: "success",
@@ -208,7 +240,9 @@ export default {
           });
         }
       }).catch(e => {
-        console.log(e);
+        if (process.env.VUE_APP_ENV !== "prod") {
+          console.log(e);
+        }
       });
     },
     editFollowing(followingItem) {
@@ -218,9 +252,9 @@ export default {
 
     },
     setUserFollowing(followingItem) { // followingItem:{userFollowing:{}, userFollowingRemarkList:{}}
-      //let following = followingItem; // 地址引用，后续的修改，会影响原始数据
-      let following = getNewObjByJson(followingItem); // json 先序列化，再反序列化为对象
-      if (following.userFollowingRemarkList != null && following.userFollowingRemarkList.length > 0) {
+      //let following = getNewObjByJson(followingItem); // json 先序列化，再反序列化为对象
+      let following = followingItem;
+      if (following.userFollowingRemarkList && following.userFollowingRemarkList.length > 0) {
         // 给每个标签添加一个属性，用于控制编辑标签时，是否显示输入框
         for (let i in following.userFollowingRemarkList) {
           //this.$set(remark, 'inputEditVisible', false); // this.$set is not a function
@@ -232,11 +266,14 @@ export default {
       }
       if (following.userFollowing) {
         // 设置用户编辑信息
-        this.$store.commit('SET_USER_FOLLOWING_DIALOG_VISIBLE', true);
-        this.$store.commit('SET_USER_FOLLOWING_DIALOG_TYPE', 1);
-        this.$store.commit('SET_USER_FOLLOWING_DIALOG_TITLE', '编辑关注');
-        this.$store.commit('SET_USER_FOLLOWING_VIEW_EDIT', following.userFollowing);
-        this.$store.commit('SET_USER_FOLLOWING_NEW_BACK', getNewObjByJson(this.$store.state.userFollowing.newFollowing));
+        this.setFollowingDialogVisible(true);
+        this.setFollowingDialogType(1);
+        this.setFollowingDialogTitle('编辑关注');
+        // TODO 注意，这里需要存的是 userFollowingItem，包含 userFollowing 和 userFollowingRemarkList
+        this.setFollowingViewItem(following);
+        // TODO 调用改变组件 key 值的方法，使组件重新渲染
+        let changeAddFollowingDialogKey = this.$store.state.userFollowing.changeAddFollowingDialogKey;
+        changeAddFollowingDialogKey();
       }
       //console.log(JSON.stringify(this.$store.state.userFollowing.userFollowingEdit));
     },
@@ -245,17 +282,11 @@ export default {
       this.setUserFollowingRelation(userFollowing);
     },
     setUserFollowingRelation(userFollowing) {
-      // 对象克隆，断开与原始对象的地址引用
-      let following = getNewObjByJson(userFollowing); // json 先序列化，再反序列化为对象
-      if (following) {
-        // 设置编辑信息
-        this.$store.commit('SET_USER_FOLLOWING_RELATION_DIALOG_VISIBLE', true);
-        this.$store.commit('SET_USER_FOLLOWING_RELATION_DIALOG_TYPE', 1);
-        this.$store.commit('SET_USER_FOLLOWING_RELATION_DIALOG_TITLE', '变更分组');
-        this.$store.commit('SET_USER_FOLLOWING_RELATION_VIEW_EDIT', following);
-        this.$store.commit('SET_USER_FOLLOWING_RELATION_NEW_BACK', getNewObjByJson(this.$store.state.userFollowingRelation.newFollowingRelation));
-      }
-      //console.log(JSON.stringify(this.$store.state.userFollowingRelation.userFollowingRelationEdit));
+      // 设置编辑信息
+      this.setRelationDialogVisible(true);
+      this.setRelationDialogType(1);
+      this.setRelationDialogTitle('变更分组');
+      this.setRelationViewItem(userFollowing);
     },
   }
 }

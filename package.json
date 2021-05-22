@@ -13,6 +13,7 @@
   "dependencies": {
     "core-js": "^3.6.5",
     "element-plus": "^1.0.2-beta.32",
+    "js-md5": "^0.7.3",
     "qs": "^6.10.1",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
@@ -23,7 +24,7 @@
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-plugin-vuex": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
+    "@vue/cli-service": "^4.5.13",
     "@vue/compiler-sfc": "^3.0.0",
     "@vue/eslint-config-prettier": "^6.0.0",
     "axios": "^0.21.1",

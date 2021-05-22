@@ -2,16 +2,34 @@
  * userFollowing 封装对象，就把它当作一个业务数据封装对象就好了
  * TODO 注意，store 中的变量，在页面刷新之后，会重置，可以结合 html 的 sessionstorage 或 localstorage 进行持久化存储
  */
+
+import * as MUTATION_TYPES from '@/constant/mutationTypes';
+
 const userFollowing = {
+    /**
+     * TODO 用命名空间即可解决在模块中 getters 和 actions 命名重复冲突
+     * 外部调用模块中 mutations、getters、actions 中方法的时候，要加上模块名
+     * this.$store.commit("userInfo/setUserInfo", userInfo)
+     * 外部调用 actions 中的方法，加上模块名
+     * this.$store.dispatch('moduleB/moduleBAction', params);
+     * 外部获取属性时同样加上模块名
+     * this.$store.state.userInfo.userName
+     */
+    namespaced: true,
+    // 包含了 store 中存储的各个状态，state 中的变量属性可以跟其他 state 中的属性同名
     state: {
+        // 修改组件 key 值，以达到重新渲染组件的目的
+        changeAddFollowingDialogKey: null,
         // 是否显示弹窗
         dialogVisible: false,
-        // 弹窗标题，默认添加关注
+        // 弹窗标题
         dialogTitle: '添加关注',
         // 弹窗类型，0-新增；1-修改，默认0
         dialogType: 0,
+        // 是否显示分组类型
+        isShowFollowingType: false,
         // 新建用户时使用新对象
-        newFollowing: {
+        instance: {
             // 用户关系表id
             id: null,
             // 用户id
@@ -43,80 +61,149 @@ const userFollowing = {
             // 关联用户标签列表json格式
             remarkListJson: null
         },
-        // 编辑对象原始备份，用于编辑提交后，重置原始状态
-        newFollowingBack: null,
-        // 视图层关注用户信息封装对象，跟页面用户对象绑定，对象内容改变，页面数据跟着改动，不用刷新
-        followingItem: null,
-        // 编辑时使用的用户信息封装对象，修改完成后，返回的封装对象赋值给 followingItem，实现动态更新数据
-        userFollowingEdit: null
+        // 用于保存页面显示对象的引用，便于动态绑定更新
+        // TODO 注意，这里需要存的是 userFollowingItem，包含 userFollowing 和 userFollowingRemarkList
+        //  因为添加/编辑用户信息，包含的元素有点多，一个页面同时可以操作用户信息、标签信息、头像
+        viewItem: null,
+
     },
+    // 类似于 Vue 中的计算属性，根据其他 getter 或 state 计算返回值。
     getters: {},
+    // 一组方法，是改变 store 中状态的执行者，只能是同步操作。
+    // TODO 注意，mutations 中的属性不能跟其他 mutations 同名，整个 store 相当于一个类，mutations 中的事件类型 (type) 相当于类中的属性，属性自然不能重名
     mutations: {
-        SET_USER_FOLLOWING_DIALOG_VISIBLE: (state, val) => {
+        [MUTATION_TYPES.SET_CHANGE_ADD_FOLLOWING_DIALOG_KEY](state, val) {
+            state.changeAddFollowingDialogKey = val;
+        },
+        [MUTATION_TYPES.SET_USER_FOLLOWING_DIALOG_VISIBLE](state, val) {
             state.dialogVisible = val;
         },
-        SET_USER_FOLLOWING_DIALOG_TITLE: (state, val) => {
+        [MUTATION_TYPES.SET_USER_FOLLOWING_DIALOG_TITLE](state, val) {
             state.dialogTitle = val;
         },
-        SET_USER_FOLLOWING_DIALOG_TYPE: (state, val) => {
+        [MUTATION_TYPES.SET_USER_FOLLOWING_DIALOG_TYPE](state, val) {
             state.dialogType = val;
         },
-        SET_USER_FOLLOWING_NEW_ID: (state, val) => {
-            state.newFollowing.id = val;
+        [MUTATION_TYPES.SET_USER_FOLLOWING_IS_SHOW_FOLLOWING_TYPE](state, val) {
+            state.isShowFollowingType = val;
         },
-        SET_USER_FOLLOWING_NEW_USER_ID: (state, val) => {
-            state.newFollowing.userId = val;
+        [MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE](state, val) {
+            state.instance = val;
         },
-        SET_USER_FOLLOWING_NEW_FOLLOWING_ID: (state, val) => {
-            state.newFollowing.followingId = val;
+        [MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_ID](state, val) {
+            state.instance.id = val;
         },
-        SET_USER_FOLLOWING_NEW_PLATFORM_ID: (state, val) => {
-            state.newFollowing.platformId = val;
+        [MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_USER_ID](state, val) {
+            state.instance.userId = val;
         },
-        SET_USER_FOLLOWING_NEW_TYPE_ID: (state, val) => {
-            state.newFollowing.typeId = val;
+        [MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_FOLLOWING_ID](state, val) {
+            state.instance.followingId = val;
         },
-        SET_USER_FOLLOWING_NEW_USER_KEY: (state, val) => {
-            state.newFollowing.userKey = val;
+        [MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_PLATFORM_ID](state, val) {
+            state.instance.platformId = val;
         },
-        SET_USER_FOLLOWING_NEW_NAME: (state, val) => {
-            state.newFollowing.name = val;
+        [MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_TYPE_ID](state, val) {
+            state.instance.typeId = val;
         },
-        SET_USER_FOLLOWING_NEW_MAIN_PAGE: (state, val) => {
-            state.newFollowing.mainPage = val;
+        [MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_USER_KEY](state, val) {
+            state.instance.userKey = val;
         },
-        SET_USER_FOLLOWING_NEW_PROFILE_PHOTO: (state, val) => {
-            state.newFollowing.profilePhoto = val;
+        [MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_NAME](state, val) {
+            state.instance.name = val;
         },
-        SET_USER_FOLLOWING_NEW_SIGNATURE: (state, val) => {
-            state.newFollowing.signature = val;
+        [MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_MAIN_PAGE](state, val) {
+            state.instance.mainPage = val;
         },
-        SET_USER_FOLLOWING_NEW_IS_USER: (state, val) => {
-            state.newFollowing.isUser = val;
+        [MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_PROFILE_PHOTO](state, val) {
+            state.instance.profilePhoto = val;
         },
-        SET_USER_FOLLOWING_NEW_SORT_NO: (state, val) => {
-            state.newFollowing.sortNo = val;
+        [MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_SIGNATURE](state, val) {
+            state.instance.signature = val;
         },
-        SET_USER_FOLLOWING_NEW_IS_DELETED: (state, val) => {
-            state.newFollowing.isDeleted = val;
+        [MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_IS_USER](state, val) {
+            state.instance.isUser = val;
         },
-        SET_USER_FOLLOWING_NEW_REMARK_LIST: (state, val) => {
-            state.newFollowing.remarkList = val;
+        [MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_SORT_NO](state, val) {
+            state.instance.sortNo = val;
         },
-        SET_USER_FOLLOWING_NEW_REMARK_LIST_JSON: (state, val) => {
-            state.newFollowing.remarkListJson = val;
+        [MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_REMARK_LIST](state, val) {
+            state.instance.remarkList = val;
         },
-        SET_USER_FOLLOWING_VIEW_ITEM: (state, val) => {
-            state.followingItem = val;
+        [MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_REMARK_LIST_JSON](state, val) {
+            state.instance.remarkListJson = val;
         },
-        SET_USER_FOLLOWING_VIEW_EDIT: (state, val) => {
-            state.userFollowingEdit = val;
+        [MUTATION_TYPES.SET_USER_FOLLOWING_VIEW_ITEM](state, val) {
+            state.viewItem = val;
         },
-        SET_USER_FOLLOWING_NEW_BACK: (state, val) => {
-            state.newFollowingBack = val;
-        }
+
     },
-    actions: {},
+    // 一组方法，其中可以包含异步操作。
+    actions: {
+        setChangeAddFollowingDialogKey({commit}, val) {
+            commit(MUTATION_TYPES.SET_CHANGE_ADD_FOLLOWING_DIALOG_KEY, val);
+        },
+        setDialogVisible({commit}, val) {
+            commit(MUTATION_TYPES.SET_USER_FOLLOWING_DIALOG_VISIBLE, val);
+        },
+        setDialogTitle({commit}, val) {
+            commit(MUTATION_TYPES.SET_USER_FOLLOWING_DIALOG_TITLE, val);
+        },
+        setDialogType({commit}, val) {
+            commit(MUTATION_TYPES.SET_USER_FOLLOWING_DIALOG_TYPE, val);
+        },
+        setIsShowFollowingType({commit}, val) {
+            commit(MUTATION_TYPES.SET_USER_FOLLOWING_IS_SHOW_FOLLOWING_TYPE, val);
+        },
+        setInstance({commit}, val) {
+            commit(MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE, val);
+        },
+        setInstanceId({commit}, val) {
+            commit(MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_ID, val);
+        },
+        setInstanceUserId({commit}, val) {
+            commit(MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_USER_ID, val);
+        },
+        setInstanceFollowingId({commit}, val) {
+            commit(MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_FOLLOWING_ID, val);
+        },
+        setInstancePlatformId({commit}, val) {
+            commit(MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_PLATFORM_ID, val);
+        },
+        setInstanceTypeId({commit}, val) {
+            commit(MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_TYPE_ID, val);
+        },
+        setInstanceUserKey({commit}, val) {
+            commit(MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_USER_KEY, val);
+        },
+        setInstanceName({commit}, val) {
+            commit(MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_NAME, val);
+        },
+        setInstanceMainPage({commit}, val) {
+            commit(MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_MAIN_PAGE, val);
+        },
+        setInstanceProfilePhoto({commit}, val) {
+            commit(MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_PROFILE_PHOTO, val);
+        },
+        setInstanceSignature({commit}, val) {
+            commit(MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_SIGNATURE, val);
+        },
+        setInstanceIsUser({commit}, val) {
+            commit(MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_IS_USER, val);
+        },
+        setInstanceRemarkList({commit}, val) {
+            commit(MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_REMARK_LIST, val);
+        },
+        setInstanceRemarkListJson({commit}, val) {
+            commit(MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_REMARK_LIST_JSON, val);
+        },
+        setInstanceSortNo({commit}, val) {
+            commit(MUTATION_TYPES.SET_USER_FOLLOWING_INSTANCE_SORT_NO, val);
+        },
+        setViewItem({commit}, val) {
+            commit(MUTATION_TYPES.SET_USER_FOLLOWING_VIEW_ITEM, val);
+        },
+    },
+    // 嵌套模块
     modules: {}
 }
 

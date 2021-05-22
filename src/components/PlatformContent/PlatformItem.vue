@@ -1,14 +1,17 @@
 <template>
-  <div v-if="platformItem && platformItem.platformBaseInfo" class="platform_item" v-bind:id="platformItem.platformBaseInfo.name">
+  <div v-if="platformItem && platformItem.platformBaseInfo" class="platform_item"
+       v-bind:id="platformItem.platformBaseInfo.name">
     <platform-name v-if="platformItem.platformBaseInfo"
                    v-bind:platformBaseInfo="platformItem.platformBaseInfo"
+                   v-bind:platformOpinionListSize="platformItem.platformOpinionList === null ? 0 : platformItem.platformOpinionList.length"
                    v-bind:userFollowingTypeListSize="platformItem.userFollowingTypeList === null ? 0 : platformItem.userFollowingTypeList.length">
     </platform-name>
     <platform-opinion v-if="platformItem.platformOpinionList && platformItem.platformOpinionList.length > 0"
-                     v-bind:opinions="platformItem.platformOpinionList">
+                      v-bind:opinions="platformItem.platformOpinionList">
     </platform-opinion>
     <platform-type-item v-if="platformItem.userFollowingTypeList && platformItem.userFollowingTypeList.length > 0"
-                      v-bind:userFollowingTypeList="platformItem.userFollowingTypeList">
+                        v-for="typeItem in platformItem.userFollowingTypeList"
+                        v-bind:typeItem="typeItem">
     </platform-type-item>
   </div>
 </template>
@@ -42,7 +45,7 @@ export default {
   props: ['platformItem'],
   provide() {
     return {
-      platformId: this.platformItem.platformBaseInfo.id
+      platformId: this.platformItem.platformBaseInfo.platformId, // 注意是 platformId，不是数据记录的主键id
     }
   },
   components: {
@@ -50,9 +53,7 @@ export default {
     PlatformOpinion,
     PlatformTypeItem
   },
-  methods: {
-
-  },
+  methods: {},
   watch: {
     /*
     platformItem : function(newData, oldData){

@@ -18,7 +18,7 @@ export default {
 
 <style scoped>
 .platform_following {
-  padding: 10px 0px 20px 0px;
+  padding: 10px 0 10px 0;
 }
 
 </style>

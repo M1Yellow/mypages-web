@@ -5,7 +5,7 @@
       <ul class="menu" id="menu">
         <!--
         v-if="platformList && platformList.length > 0" 表示变量使用之前，先判断和校验，避免出现 undefined 错误。
-        当然，每次都判断嫌麻烦的话（会发现代码里面很多判断代码），也可以不判断，到时候报错再检查处理也行。
+        TODO 关于变量用之前校验判断，每次都判断会发现代码里面很多判断代码，挺麻烦，且徒增工作量，也可以不判断，到时候报错再检查处理也行。
         -->
         <li v-if="platformList && platformList.length > 0" class="menu_item"
             v-for="(platformItem, idx) in platformList"
@@ -44,7 +44,9 @@ import {onScroll, scrollTo} from '@/utils/scroll-navigation';
 import CommonItem from "@/components/Common/CommonItem";
 import PlatformItem from "@/components/PlatformContent/PlatformItem";
 import BaseBackTop from "@/components/BaseBackTop";
-import {getJsonData, initAllData} from '@/api/home';
+import {getJsonData, initAllData, initDefaultData} from '@/api/home';
+import {getUserId, checkToken} from '@/utils/auth'
+import {getUserFollowingTypeList, getUserPlatformList} from "@/api/global";
 
 /*
 定义常量、变量
@@ -69,20 +71,20 @@ export default {
   name: 'navPos', // 导航栏滚动定位
   data() {
     return {
-      userId: 1,
+      userId: null,
       baseApi: process.env.VUE_APP_BASE_API,
       active: 0, // 当前激活的导航索引
       addPlatformShow: false,
       platformList: null
     }
   },
+  // 注入页面属性
   provide: function () {
     return {
-      userId: this.userId,
+      isNeedLogin: this.isNeedLogin,
+      userId: this.userId ? this.userId : getUserId(),
       showUnfinishedDialog: this.showUnfinishedDialog
     }
-  },
-  beforeCreate() { // 实例创建之前，初始化事件和生命周期
   },
   created() { // 开始初始化 DOM 时，可以开始请求数据，注意，此时还不能操作 DOM 元素
     // 加载数据
@@ -159,28 +161,65 @@ export default {
         history.pushState(null, null, toUrl); // 重新设置地址栏网址
       }
     },
+    isNeedLogin() {
+      // 校验是否需要登录
+      return !checkToken();
+    },
     getData() {
+      // TODO 获取缓存的用户id
+      if (!this.userId) {
+        this.userId = getUserId();
+      }
+      // 延迟加载用户平台、类型列表数据，供修改分类使用
+      if (this.userId) {
+        setTimeout(() => {
+          if (process.env.VUE_APP_ENV !== "prod") {
+            console.log(">>>> get platform and type of user delay.");
+          }
+          let platformList = getUserPlatformList(this.userId);
+          if (platformList && platformList.length > 0) {
+            for (let i = 0; i < platformList.length; i++) {
+              if (!platformList[i]) continue;
+              getUserFollowingTypeList(this.userId, platformList[i].platformId);
+            }
+          }
+        }, 10000);
+      }
+      // 加载首页数据
       let params = {
         userId: this.userId
       };
-      //console.log(">>>> initAllData...");
-      if (process.env.VUE_APP_MOCK === "true") {
-        // 【本地环境】获取本地 json 文件数据
+      if (process.env.VUE_APP_MOCK === "true") { // 【本地环境】获取本地 json 文件数据
         console.log(">>>> homeApi.getJsonData");
         getJsonData("/json/home/platformList.json").then(response => {
           //console.log(response);
           this.platformList = response.data;
         }).catch(e => {
-          console.log(e);
+          if (process.env.VUE_APP_ENV !== "prod") {
+            console.log(e);
+          }
         });
-      } else {
-        // 【测试、开发、正式环境】请求接口数据
-        //console.log(">>>> homeApi.initAllData");
-        initAllData(params).then(response => {
-          this.platformList = response.data;
-        }).catch(e => {
-          console.log(e);
-        });
+      } else { // 【测试、开发、正式环境】请求接口数据
+        if (process.env.VUE_APP_ENV !== "prod") {
+          console.log(">>>> initAllData params:", JSON.stringify(params));
+        }
+        if (this.userId) { // 用户id不为空，加载对应用户数据
+          initAllData(params).then(res => {
+            this.platformList = res.data;
+          }).catch(e => {
+            if (process.env.VUE_APP_ENV !== "prod") {
+              console.log(e);
+            }
+          });
+        } else { // 没有用户id，则加载默认内容
+          initDefaultData(params).then(res => {
+            this.platformList = res.data;
+          }).catch(e => {
+            if (process.env.VUE_APP_ENV !== "prod") {
+              console.log(e);
+            }
+          });
+        }
       }
     },
     showUnfinishedDialog() { // 全局提示 “功能未完成”

@@ -13,7 +13,7 @@
                      v-model="userFollowingRelation.platformId"
                      placeholder="-请选择-" disabled>
             <el-option v-for="platformItem in platformList" :label="platformItem.name"
-                       :value="platformItem.id"></el-option>
+                       :value="platformItem.platformId"></el-option>
           </el-select>
           <span class="change_following_type_desc">（暂不支持修改）</span>
         </el-form-item>
@@ -40,7 +40,10 @@
 </template>
 
 <script>
-import {changType, getPlatformList, getTypeList} from '@/api/user';
+import {changType} from '@/api/user';
+import {getUserFollowingTypeList, getUserPlatformList} from '@/api/global';
+import {mapActions} from "vuex";
+import {getNewObjByJson} from "@/utils";
 
 export default {
   name: "ChangeFollowingType",
@@ -48,11 +51,24 @@ export default {
   data() {
     return {
       // 用户与关注用户的关联
-      userFollowingRelation: null,
+      userFollowingRelation: {
+        // 用户关系表id
+        id: null,
+        // 用户id
+        userId: null,
+        // 关注用户表id
+        followingId: null,
+        // 平台id
+        platformId: null,
+        // 类型id
+        typeId: null,
+        // 页面显示优先级，由低到高：1-10，默认5
+        sortNo: 5,
+      },
       // 平台列表
-      platformList: [],
+      platformList: null,
       // 分类类型列表
-      typeList: [],
+      typeList: null,
       // 排序优先级，[1, 10] 优先级逐渐递增
       sortValues: [],
     }
@@ -72,19 +88,40 @@ export default {
       return this.$store.state.userFollowingRelation.dialogVisible;
     },
     getUserFollowingRelation() {
-      if (this.$store.state.userFollowingRelation.userFollowingRelationEdit) {
-        return this.$store.state.userFollowingRelation.userFollowingRelationEdit;
+      if (this.$store.state.userFollowingRelation.viewItem) {
+        return this.$store.state.userFollowingRelation.viewItem;
       }
-      return this.$store.state.userFollowingRelation.newFollowingRelation;
+      return null;
     },
     getSortValues() {
       return this.$store.state.globalProperties.sortValues;
     },
   },
   methods: {
+    ...mapActions({
+      setDialogVisible: 'userFollowingRelation/setDialogVisible',
+      setViewItem: 'userFollowingRelation/setViewItem'
+    }),
     initData() {
       // 获取编辑数据
-      this.userFollowingRelation = this.getUserFollowingRelation;
+      let viewItem = this.getUserFollowingRelation;
+      if (viewItem) {
+        // TODO 视图对象不为空，说明是编辑数据，复制一个编辑副本，避免修改还未提交，页面数据就已经动态改变了
+        this.userFollowingRelation = getNewObjByJson(viewItem);
+      }
+      // 设置 userId
+      if (!this.userFollowingRelation.userId) {
+        this.userFollowingRelation.userId = this.$store.state.userFollowingRelation.instance.userId;
+      }
+      // 设置 platformId
+      if (!this.userFollowingRelation.platformId) {
+        this.userFollowingRelation.platformId = this.$store.state.userFollowingRelation.instance.platformId;
+      }
+      // 设置 followingId
+      if (!this.userFollowingRelation.followingId) {
+        this.userFollowingRelation.followingId = this.$store.state.userFollowingRelation.instance.followingId;
+      }
+
       // 获取排序优先级
       this.sortValues = this.getSortValues;
       // 加载数据
@@ -92,50 +129,19 @@ export default {
     },
     getData() {
       // 请求后端接口，获取数据
-      if (this.platformList === null || this.platformList.length < 1) {
+      // TODO 注意，[] 空数组校验为 true
+      if (!this.platformList || this.platformList.length < 1) {
         this.initPlatformList();
       }
-      if (this.typeList === null || this.typeList.length < 1) {
+      if (!this.typeList || this.typeList.length < 1) {
         this.initTypeList();
       }
     },
     initPlatformList() {
-      let params = {
-        userId: this.userId
-      }
-      if (process.env.VUE_APP_ENV !== "prod") {
-        console.log(">>>> getPlatformList params: ", JSON.stringify(params));
-      }
-      getPlatformList(params).then(res => {
-        if (process.env.VUE_APP_ENV !== "prod") {
-          console.log(">>>> getPlatformList response: ", JSON.stringify(res));
-        }
-        if (res.code === 200) {
-
-          this.platformList = res.data;
-        }
-      }).catch(e => {
-        console.log(e);
-      });
+      this.platformList = getUserPlatformList(this.userFollowingRelation.userId);
     },
     initTypeList() {
-      let params = {
-        userId: this.userId
-      }
-      if (process.env.VUE_APP_ENV !== "prod") {
-        console.log(">>>> getTypeList params: ", JSON.stringify(params));
-      }
-      getTypeList(params).then(res => {
-        if (process.env.VUE_APP_ENV !== "prod") {
-          console.log(">>>> getTypeList response: ", JSON.stringify(res));
-        }
-        if (res.code === 200) {
-
-          this.typeList = res.data;
-        }
-      }).catch(e => {
-        console.log(e);
-      });
+      this.typeList = getUserFollowingTypeList(this.userFollowingRelation.userId, this.userFollowingRelation.platformId);
     },
     beforeClose(done) {
       this.onCancel();
@@ -165,8 +171,10 @@ export default {
       }
 
       // 清空不需要的字段值
-      this.userFollowingRelation.createTime = null;
-      this.userFollowingRelation.updateTime = null;
+      if (this.userFollowingRelation.createTime)
+        this.userFollowingRelation.createTime = null;
+      if (this.userFollowingRelation.updateTime)
+        this.userFollowingRelation.updateTime = null;
 
       // 封装参数
       let formData = new FormData();
@@ -180,7 +188,6 @@ export default {
       //if (process.env.VUE_APP_MOCK === "false") return;
       this.doChangeType(formData);
 
-      this.setDialog();
     },
     doChangeType(formData) {
       // 发起请求
@@ -201,10 +208,17 @@ export default {
             type: "success",
             message: res.message
           });
+
           // 修改分类需要刷新页面
           setTimeout(() => {
             this.reload();
           }, 2000);
+
+          // 隐藏弹窗
+          this.setDialog();
+          // 重置数据
+          this.resetParams();
+
         } else {
           this.$message({
             type: "warning",
@@ -212,13 +226,22 @@ export default {
           });
         }
       }).catch(e => {
-        console.log(e);
+        if (process.env.VUE_APP_ENV !== "prod") {
+          console.log(e);
+        }
       });
     },
     // 设置弹窗
     setDialog() {
-      this.$store.commit('SET_USER_FOLLOWING_RELATION_DIALOG_VISIBLE', false);
+      //this.$store.commit('SET_USER_FOLLOWING_RELATION_DIALOG_VISIBLE', false);
+      this.setDialogVisible(false);
     },
+    // 重置数据
+    resetParams() {
+      // 重置表单数据
+      this.setViewItem({}); // 指向空对象，指向 null 不生效
+    },
+
   }
 }
 </script>

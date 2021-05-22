@@ -1,13 +1,24 @@
 import {createRouter, createWebHistory} from "vue-router";
-import Home from '../views/home/index';
-import NotFound from '../views/404/index';
+import Login from '@/views/login/index';
+import Home from '@/views/home/index';
+import NotFound from '@/views/404/index';
 
 const routes = [
+    {
+        name: "login",
+        path: "/login",
+        meta: {
+            title: "登录",
+            keepAlive: false // 不需要缓存
+        },
+        component: Login
+    },
     {
         name: "home",
         path: "/",
         meta: {
-            title: "MyPages 我的主页我定义"
+            title: "MyPages 我的主页我定义",
+            keepAlive: true
         },
         component: Home
     },
@@ -17,7 +28,8 @@ const routes = [
         //path: "*", // vue 2 的写法
         path: "/:catchAll(.*)", // vue 3
         meta: {
-            title: "404 Not Found"
+            title: "404 Not Found",
+            keepAlive: true
         },
         component: NotFound
     }

@@ -101,7 +101,14 @@ i {
 .el-icon-setting {
     font-size: 18px;
 }
+
 /* 下拉框三角 */
 .el-dropdown__popper>.el-popper__arrow {
     display: none;
+}
+
+/* 提示框位置 */
+.el-message-box {
+    position: relative;
+    top: -30%;
 }

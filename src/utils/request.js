@@ -1,7 +1,8 @@
 import axios from 'axios'
 import {ElMessage, ElMessageBox} from 'element-plus'
-import store from '../store'
-import {getToken} from '@/utils/auth'
+import store from '@/store'
+import {getToken, getTokenHeader, checkToken} from '@/utils/auth'
+import {getNewObjByJson} from "@/utils/index";
 
 // 创建 axios 实例
 const service = axios.create({
@@ -12,12 +13,22 @@ const service = axios.create({
 });
 
 // 接口报错，默认提示信息
-const API_ERROR_DEFAULT_MSG = process.env.VUE_APP_API_ERROR_DEFAULT_MSG;
+const API_ERROR_DEFAULT_MSG = process.env.VUE_APP_ERROR_DEFAULT_MSG;
+
+// TODO 注意，这里提取变量，如果页面没有真正刷新（目前vue用的reload就不是完全刷新网页），会导致不调用方法，导致变量值为 null
+// JWT 授权认证标识
+//let tokenHeader = getTokenHeader();
+// JWT token
+//let token = getToken();
+
 
 // request 拦截器
 service.interceptors.request.use(config => {
-    if (store.getters.token) {
-        config.headers['Authorization'] = getToken(); // 让每个请求携带自定义token 请根据实际情况自行修改
+    if (getTokenHeader() && getToken()) { // 改成方法参数，每次都会执行
+        config.headers[getTokenHeader()] = getToken(); // 让每个请求携带自定义token 请根据实际情况自行修改
+    }
+    if (process.env.VUE_APP_ENV !== "prod") {
+        //console.log(">>>> request config:", JSON.stringify(config));
     }
     return config;
 }, error => {
@@ -44,14 +55,34 @@ service.interceptors.response.use(
                     duration: 3 * 1000
                 });
             } else if (res.code === 401) { // 401-未登录;
-                ElMessageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
+                ElMessageBox.confirm('您的登录状态已失效，请重新登录', '登录提示', {
                     confirmButtonText: '重新登录',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    store.dispatch('FedLogOut').then(() => {
-                        location.reload(); // 为了重新实例化 vue-router 对象，避免 bug
+                    // 显示登录弹窗
+                    //store.commit('SET_USER_LOGIN_DIALOG_VISIBLE', true);
+                    store.dispatch('userLogin/setDialogVisible', true);
+                }).catch(() => { // 点取消，或空白区域，跳转默认数据首页
+                    /*
+                    ElMessage({
+                        message: res.message ? res.message : API_ERROR_DEFAULT_MSG,
+                        type: 'error',
+                        duration: 3 * 1000
                     });
+                    */
+                });
+            } else if (res.code === 403) { // 403-没有权限;
+                ElMessage({
+                    message: res.message ? res.message : API_ERROR_DEFAULT_MSG,
+                    type: 'error',
+                    duration: 3 * 1000
+                });
+            } else if (res.code === 400) { // 400-方法校验失败;
+                ElMessage({
+                    message: res.message ? res.message : API_ERROR_DEFAULT_MSG,
+                    type: 'error',
+                    duration: 3 * 1000
                 });
             } else { // 其他，默认
                 // 默认提示
@@ -69,7 +100,7 @@ service.interceptors.response.use(
         }
     },
     error => {
-        console.log('error:' + error); // for debug
+        console.log(error); // for debug
         ElMessage({
             message: API_ERROR_DEFAULT_MSG ? API_ERROR_DEFAULT_MSG : error.message,
             type: 'error',

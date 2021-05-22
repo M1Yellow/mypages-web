@@ -14,6 +14,14 @@ export function initAllData(params) {
     });
 }
 
+export function initDefaultData() {
+    return request({
+        url: '/home',
+        method: 'get',
+        //params: params
+    });
+}
+
 export function getGlobalProperties(params) {
     return request({
         url: '/home/properties',

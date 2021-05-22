@@ -1,7 +1,11 @@
 /**
- * 全局参数配置
+ * 全局参数状态缓存
  */
+
+import * as MUTATION_TYPES from '@/constant/mutationTypes';
+
 const globalProperties = {
+    namespaced: true,
     state: {
         // 排序优先级
         sortValues: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
@@ -12,17 +16,27 @@ const globalProperties = {
     },
     getters: {},
     mutations: {
-        SET_GLOBAL_PROPERTIES_SORT_VALUES: (state, val) => {
+        [MUTATION_TYPES.SET_GLOBAL_PROPERTIES_SORT_VALUES](state, val) {
             state.sortValues = val;
         },
-        SET_GLOBAL_PROPERTIES_PLATFORM_LIST: (state, val) => {
+        [MUTATION_TYPES.SET_GLOBAL_PROPERTIES_PLATFORM_LIST](state, val) {
             state.platformList = val;
         },
-        SET_GLOBAL_PROPERTIES_TYPE_LIST: (state, val) => {
+        [MUTATION_TYPES.SET_GLOBAL_PROPERTIES_TYPE_LIST](state, val) {
             state.typeList = val;
         },
     },
-    actions: {},
+    actions: {
+        setGlobalSortValues({commit}, val) {
+            commit(MUTATION_TYPES.SET_GLOBAL_PROPERTIES_SORT_VALUES, val);
+        },
+        setGlobalPlatformList({commit}, val) {
+            commit(MUTATION_TYPES.SET_GLOBAL_PROPERTIES_PLATFORM_LIST, val);
+        },
+        setGlobalTypeList({commit}, val) {
+            commit(MUTATION_TYPES.SET_GLOBAL_PROPERTIES_TYPE_LIST, val);
+        },
+    },
     modules: {}
 }
 

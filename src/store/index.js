@@ -2,8 +2,9 @@ import {createStore} from "vuex";
 import globalProperties from "@/store/modules/globalProperties";
 import userFollowing from "@/store/modules/userFollowing";
 import userFollowingRelation from "@/store/modules/userFollowingRelation";
-import userFollowingRemark from "@/store/modules/userFollowingRemark";
-import userPlatform from "@/store/modules/userPlatform";
+import userFollowingType from "@/store/modules/userFollowingType";
+import userOpinion from "@/store/modules/userOpinion";
+import userLogin from "@/store/modules/userLogin";
 
 /*
 Vuex 是一个针对 Vue.js 开发的状态管理模式。说简单点儿就是一个工具，可以管理（修改或设置）所有组件用到的数据，
@@ -32,7 +33,8 @@ export default createStore({
         globalProperties,
         userFollowing,
         userFollowingRelation,
-        userFollowingRemark,
-        userPlatform
+        userFollowingType,
+        userOpinion,
+        userLogin,
     }
 });

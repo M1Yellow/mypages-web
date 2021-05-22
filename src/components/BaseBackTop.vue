@@ -16,7 +16,7 @@ export default {
   justify-content: center; /* 内容调整 */
   align-items: center; /* 居中 */
   font-size: 27px;
-  /*color: #909399;*/
+  /*color: mediumseagreen;*/
   /*background-color: #f2f5f6;*/
   border-radius: unset;
   box-shadow: 0 0 6px rgba(0,0,0,.12);

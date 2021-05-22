@@ -4,7 +4,8 @@
                :before-close="beforeClose"
                :destroy-on-close="true">
       <el-form ref="addFollowingForm" :model="userFollowing" :rules="rules" label-width="100px">
-        <el-form-item label="是否为用户">
+        <!-- 编辑关注，不支持更改用户类型 -->
+        <el-form-item label="是否为用户" v-if="!userFollowing.followingId">
           <el-radio-group v-model="userFollowing.isUser" :value="true" prop="isUser" v-on:change="isUserRadioChange">
             <el-radio :label="true">用户</el-radio>
             <el-radio :label="false">非用户</el-radio>
@@ -20,7 +21,14 @@
                     v-model="userFollowing.mainPage"></el-input>
         </el-form-item>
         <el-form-item label="个性签名" prop="signature" v-if="!userFollowing.isUser">
-          <el-input type="textarea" maxlength="200" show-word-limit v-model="userFollowing.signature"></el-input>
+          <el-input type="textarea" maxlength="200" :autosize="{ minRows: 2, maxRows: 10 }" show-word-limit
+                    v-model="userFollowing.signature"></el-input>
+        </el-form-item>
+        <el-form-item label="分组类型" v-if="isShowFollowingType">
+          <el-select class="change_following_type_select change_following_type_list"
+                     v-model="userFollowing.typeId" placeholder="-请选择-">
+            <el-option v-for="typeItem in typeList" :label="typeItem.typeName" :value="typeItem.id"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="排序优先级" prop="sortNo">
           <el-select class="add_following_sort" v-model="userFollowing.sortNo" placeholder="-请选择-">
@@ -80,25 +88,6 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
           <span class="add_following_desc">（文件类型：jpg/jpeg/png/gif；文件大小：不超过 3M）</span>
-          <!--
-          <el-upload
-              class="add_following_profile"
-              action="https://jsonplaceholder.typicode.com/posts/"
-              accept="image/jpeg,image/png,image/gif"
-              :on-preview="handlePreview"
-              :on-remove="handleRemove"
-              :before-remove="beforeRemove"
-              :before-upload="beforeUpload"
-              :auto-upload="false"
-              :limit="1"
-              :file-list="fileList"
-          >
-            <el-button size="small" type="primary">点击上传</el-button>
-            <template #tip>
-              <div class="el-upload__tip">文件类型：jpg/jpeg/png/gif；文件大小：不超过 3M</div>
-            </template>
-          </el-upload>
-          -->
         </el-form-item>
         <el-form-item class="func_btn_area">
           <el-button type="primary" class="func_btn_submit" @click="onSubmit('addFollowingForm')">确认</el-button>
@@ -111,8 +100,11 @@
 
 <script>
 import {addFollowing} from '@/api/user';
+import {getUserFollowingTypeList} from '@/api/global';
 import {getNewObjByJson} from '@/utils/index';
 import {validateURL} from '@/utils/validate';
+import {mapActions} from 'vuex';
+
 
 export default {
   name: "AddFollowing",
@@ -131,11 +123,42 @@ export default {
     };
     return {
       // 用户信息封装对象
-      userFollowing: null,
-      // 头像文件
-      //profile: null,
-      // 标签列表（临时存储）
-      //remarks: this.userFollowing.remarkList,
+      userFollowing: {
+        // 用户关系表id
+        id: null,
+        // 用户id
+        userId: null,
+        // 关注用户表id
+        followingId: null,
+        // 平台id
+        platformId: null,
+        // 类型id
+        typeId: null,
+        // 用户来源平台的id或标识
+        userKey: null,
+        // 用户名
+        name: null,
+        // 用户主页
+        mainPage: null,
+        // 头像文件路径
+        profilePhoto: null,
+        // 个性签名
+        signature: null,
+        // 是否为用户
+        isUser: true,
+        // 页面显示优先级，由低到高：1-10，默认5
+        sortNo: 5,
+        // 是否删除，默认 false
+        isDeleted: false,
+        // 关联用户标签列表
+        remarkList: [],
+        // 关联用户标签列表json格式
+        remarkListJson: null
+      },
+      // 是否显示分组类型
+      isShowFollowingType: this.$store.state.userFollowing.isShowFollowingType,
+      // 分类类型列表
+      typeList: null,
       // 排序优先级，[1, 10] 优先级逐渐递增
       sortValues: [],
       // 新增标签
@@ -167,38 +190,98 @@ export default {
       }
     }
   },
+  created() {
+    // 初始化一些数据
+    // TODO 弹窗显示的时候，才加载
+    if (this.getDialogVisible) {
+      this.initData();
+    }
+  },
   // 属性计算
   // TODO 注意，这里面的方法会多次调用！！因为 v-mode 为双向绑定，方法内的属性变了，方法会再次执行，造成方法抖动现象
   computed: {
     getDialogVisible() {
-      if (this.$store.state.userFollowing.dialogVisible) { // 为 true，即显示弹窗时，才初始数据
-        // 初始化一些数据
-        this.initData();
-      }
       return this.$store.state.userFollowing.dialogVisible;
     },
     getDialogTitle() {
       return this.$store.state.userFollowing.dialogTitle;
     },
     getUserFollowing() {
-      if (this.$store.state.userFollowing.userFollowingEdit) {
-        return this.$store.state.userFollowing.userFollowingEdit;
+      // TODO 注意，这里需要存的是 userFollowingItem，包含 userFollowing 和 userFollowingRemarkList
+      if (this.$store.state.userFollowing.viewItem && this.$store.state.userFollowing.viewItem.userFollowing) {
+        return this.$store.state.userFollowing.viewItem.userFollowing;
       }
-      return this.$store.state.userFollowing.newFollowing;
+      return null;
     },
     getSortValues() {
       return this.$store.state.globalProperties.sortValues;
     },
   },
   methods: {
+    ...mapActions({
+      setDialogVisible: 'userFollowing/setDialogVisible',
+      setIsShowFollowingType: 'userFollowing/setIsShowFollowingType',
+      setViewItem: 'userFollowing/setViewItem'
+    }),
+    watch: {
+
+      /*
+      platformItem : function(newData, oldData){
+        console.log(newData);
+        this.platformId = newData.platformBaseInfo.id;
+      }
+      */
+    },
     initData() {
-      // 获取编辑用户数据
-      this.userFollowing = this.getUserFollowing;
+      if (process.env.VUE_APP_ENV !== "prod") {
+        console.log(">>>> userFollowing initData >>>>");
+      }
+      // 获取编辑数据
+      let viewItem = this.getUserFollowing;
+      if (viewItem) {
+        // TODO 视图对象不为空，说明是编辑数据，复制一个编辑副本，避免修改还未提交，页面数据就已经动态改变了
+        this.userFollowing = getNewObjByJson(viewItem);
+      }
+      // 设置 userId
+      if (!this.userFollowing.userId) {
+        this.userFollowing.userId = this.$store.state.userFollowing.instance.userId;
+      }
+      // 设置 platformId
+      if (!this.userFollowing.platformId) {
+        this.userFollowing.platformId = this.$store.state.userFollowing.instance.platformId;
+      }
+      // 设置 typeId
+      if (!this.userFollowing.typeId) {
+        this.userFollowing.typeId = this.$store.state.userFollowing.instance.typeId;
+      }
       // 获取排序优先级
       this.sortValues = this.getSortValues;
+      // 如果是平台添加关注，需要加载类型列表
+      if (!this.userFollowing.typeId) {
+        // 请求后端接口，获取数据
+        // TODO 注意，[] 空数组校验为 true
+        if (!this.typeList || this.typeList.length < 1) {
+          this.initTypeList();
+        }
+      }
+
+      /*
+      // TODO 因为动态绑定的原因，getDialogVisible() 方法中获取了太多的变量，一旦有一个变化，方法会重新触发执行，导致刚填写的内容就被清空了
+      // 新增操作，重置字段内容
+      if (this.$store.state.userFollowing.dialogType === 0) {
+        // TODO 将回调延迟到下次DOM更新循环之后执行。在修改数据之后立即使用它，然后等待DOM更新。
+        this.$nextTick(() => {
+          this.resetForm('addFollowingForm');
+        });
+      }
+      */
+
       // 备份原来的标签，避免重复添加
       this.backRemarkList();
-      //console.log(">>>> isFileSelected: ", this.isFileSelected);
+
+    },
+    initTypeList() {
+      this.typeList = getUserFollowingTypeList(this.userFollowing.userId, this.userFollowing.platformId);
     },
     isUserRadioChange: function (val) {
       //console.log(val);
@@ -208,11 +291,15 @@ export default {
       this.onCancel();
       done();
     },
+    // 重置表单参数
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
     onSubmit: function (formName) {
-      //console.log("formName: ", formName);
+      //console.log("formName:", formName);
       // 组件自带规则校验
       this.$refs[formName].validate((valid) => {
-        //console.log("valid: ", valid);
+        //console.log("valid:", valid);
         if (!valid) return false; // TODO 这里有坑，校验不通过，竟然没返回，还继续往下执行！
       });
 
@@ -222,11 +309,12 @@ export default {
         return false;
       }
       if (!this.userFollowing.platformId) {
-        this.$message.error('平台类型错误');
+        this.$message.error('平台id错误');
         return false;
       }
-      if (!this.userFollowing.typeId) {
-        this.$message.error('关注用户类型错误');
+      // 0表示默认分类
+      if (this.userFollowing.typeId === null || this.userFollowing.typeId === undefined) {
+        this.$message.error('类型id错误');
         return false;
       }
       if (!this.userFollowing.name) {
@@ -261,16 +349,22 @@ export default {
       }
 
       // 清空不需要的字段值
-      this.userFollowing.createTime = null;
-      this.userFollowing.updateTime = null;
-      this.userFollowing.remarkList = null;
+      if (this.userFollowing.createTime)
+        this.userFollowing.createTime = null;
+      if (this.userFollowing.updateTime)
+        this.userFollowing.updateTime = null;
 
       // 通过 FormData 对象上传文件及数据
       let formData = new FormData();
       // 用户信息对象
       for (let key in this.userFollowing) {
         if (this.userFollowing[key] === null) continue;
-        formData.append(key, this.userFollowing[key]);
+        if (key === 'remarkList') { // list参数请求到服务端解析转换失败
+          //formData.append(key, null);
+          continue;
+        } else {
+          formData.append(key, this.userFollowing[key]);
+        }
       }
 
       // 判断是否为非用户，只有非用户需要手动上传，用户会自动从主页获取
@@ -289,14 +383,29 @@ export default {
         }
       }
 
-      this.setDialog();
     },
     onCancel() {
       this.setDialog();
     },
     // 设置弹窗
     setDialog() {
-      this.$store.commit('SET_USER_FOLLOWING_DIALOG_VISIBLE', false);
+      //this.$store.commit('SET_USER_FOLLOWING_DIALOG_VISIBLE', false);
+      this.setDialogVisible(false);
+      // 强制重新渲染当前组件
+      //this.$forceUpdate(); // 没生效
+      // 重置分组类型显示标识
+      this.setIsShowFollowingType(false);
+    },
+    // 重置数据
+    resetParams(formData) {
+      // 重置表单数据
+      this.setViewItem({}); // 指向空对象，指向 null 不生效
+      // 文件提交后，将标识重置
+      if (formData.get("profile")) {
+        this.isFileSelected = false;
+      }
+      // 新增或编辑用户头像之后，重置头像文件，避免后面操作还看到之前选择的头像
+      this.imageUrl = null;
     },
 
     /* 标签操作 */
@@ -318,8 +427,9 @@ export default {
         showClose: false,
         type: 'warning'
       }).then(() => {
-        if (this.userFollowing.remarkList === null) {
+        if (!this.userFollowing.remarkList) {
           this.userFollowing.remarkList = [];
+          return;
         }
         if (this.userFollowing.remarkList.length < 1) {
           return;
@@ -330,14 +440,14 @@ export default {
     },
     showInput() {
       this.inputVisible = true;
-      this.$nextTick(_ => {
+      this.$nextTick(() => {
         this.$refs.saveTagInput.$refs.input.focus();
       });
     },
     showEditInput(tag) {
       tag.inputEditVisible = true;
       this.inputEditValue = tag.labelName;
-      this.$nextTick(_ => {
+      this.$nextTick(() => {
         this.$refs.saveEditTagInput.$refs.input.focus();
       });
     },
@@ -361,16 +471,16 @@ export default {
         for (let i in this.originalRemarkList) {
           if (this.inputValue === this.originalRemarkList[i].labelName.trim()) {
             //console.log("已存在原始标签：" + this.originalRemarkList[i].labelName.trim());
-            // 进一步判断 id 是否已存在于新编辑标签列表，避免id重复，导致最后保存结果不一致
+            labelId = this.originalRemarkList[i].id;
+            if (!labelId) continue;
+            // 进一步判断 id 是否已存在于新编辑标签列表，如果在，则把新增标签的id去掉，避免id重复，导致最后保存结果不一致
             if (this.userFollowing.remarkList && this.userFollowing.remarkList.length > 0) {
               for (let j in this.userFollowing.remarkList) {
-                if (this.originalRemarkList[i].id === this.userFollowing.remarkList[j].id) {
+                if (labelId === this.userFollowing.remarkList[j].id) {
+                  labelId = null;
                   break;
                 }
-                labelId = this.originalRemarkList[i].id;
               }
-            } else {
-              labelId = this.originalRemarkList[i].id;
             }
           }
         }
@@ -486,33 +596,30 @@ export default {
             message: res.message
           });
 
-          // 文件提交后，将标识重置
-          if (formData.get("profile")) {
-            this.isFileSelected = false;
-          }
-          // 新增或修改用户完成后，重置用户信息封装对象，避免老数据遗留
-          this.userFollowing = this.$store.state.userFollowing.newFollowingBack;
-          // 新增或编辑用户头像之后，重置头像文件，避免后面操作还看到之前选择的头像
-          this.imageUrl = null;
-
           if (formData.get("followingId")) { // 有 followingId，说明是更新操作
             // TODO 将修改成功返回的用户对象，赋值给 store 中的 followingItem，因为它跟页面数据绑定了，修改之后，页面数据自动更新
             // 页面对象
-            let pageFollowingItem = this.$store.state.userFollowing.followingItem;
-            //console.log(">>>> pageFollowingItem: ", JSON.stringify(pageFollowingItem));
+            let pageItem = this.$store.state.userFollowing.viewItem;
+            //console.log(">>>> pageItem:", JSON.stringify(pageItem));
             // 接口返回对象
-            let returnFollowingItem = res.data;
-            //console.log(">>>> returnFollowingItem: ", JSON.stringify(returnFollowingItem));
-            //pageFollowingItem = returnFollowingItem; // 这样不管用
+            let returnItem = res.data;
+            //console.log(">>>> returnItem:", JSON.stringify(returnItem));
+            //pageItem = returnItem; // 这样不管用
             // 内部修改有效！亲自见证 vue 动态绑定的魅力！哈哈哈哈
-            pageFollowingItem.userFollowing = returnFollowingItem.userFollowing;
-            pageFollowingItem.userFollowingRemarkList = returnFollowingItem.userFollowingRemarkList;
+            pageItem.userFollowing = returnItem.userFollowing;
+            pageItem.userFollowingRemarkList = returnItem.userFollowingRemarkList;
 
           } else { // 新增关注，需要刷新页面，重新加载数据
             setTimeout(() => {
               this.reload();
             }, 2000);
           }
+
+          // 隐藏弹窗
+          this.setDialog();
+          // 重置数据
+          this.resetParams(formData);
+
         } else {
           this.$message({
             type: "warning",
@@ -520,7 +627,9 @@ export default {
           });
         }
       }).catch(e => {
-        console.log(e);
+        if (process.env.VUE_APP_ENV !== "prod") {
+          console.log(e);
+        }
       });
     },
     imagePreview(file) { // 显示图片预览
@@ -547,8 +656,12 @@ export default {
   width: 80%;
 }
 
+.change_following_type_select {
+  width: 150px;
+}
+
 .add_following_sort {
-  width: 100px;
+  width: 150px;
 }
 
 /* 单选 */

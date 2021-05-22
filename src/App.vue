@@ -1,24 +1,26 @@
 <template>
-  <div id="app">
-    <router-view v-if="isRouterAlive"></router-view>
-  </div>
+  <!-- TODO 被 keep-alive 包含的组件会被缓存，保留状态，不会被再次初始化，也就意味着不会重走生命周期函数 -->
+  <!--<keep-alive></keep-alive>-->
+  <!-- router-view 相当于是视图容器或窗口，就是一块显示屏，里面放啥内容自定 -->
+  <router-view v-if="isRouterAlive"></router-view>
+
 </template>
 
 <script>
 export default {
   name: 'App',
-  provide () {
+  provide() {
     return {
       reload: this.reload
     }
   },
-  data () {
+  data() {
     return {
       isRouterAlive: true
     }
   },
   methods: {
-    reload () {
+    reload() {
       /*
       // 保存当前页面浏览位置
       // 获取当前 offsetTop
