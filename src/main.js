@@ -6,13 +6,15 @@ import md5 from 'js-md5';
 import {Base64} from 'js-base64';
 import GlobalConstant from '@/constant/GlobalConstant';
 // 初始化覆盖浏览器默认的 user agent stylesheet
-import './assets/css/init-argent-css.css';
+import '@/assets/css/init-argent-css.css';
 // Element-ui 组件依赖
 import ElementPlus from 'element-plus';
 import 'element-plus/lib/theme-chalk/index.css';
 // markdown-it 组件依赖
 import VueMarkdownIt from 'vue3-markdown-it';
 import 'github-markdown-css/github-markdown.css';
+// 引入根元素 rem 自动调整
+import '@/utils/rem'
 //import 'highlight.js/styles/github.css';
 //import $ from 'jquery';
 // 引入 mockjs 只有在 mock 模式下才会拦截

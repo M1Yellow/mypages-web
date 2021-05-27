@@ -193,6 +193,19 @@ export function removeOpinion(params) {
 }
 
 /**
+ * 获取观点列表（支持分页）
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export function getOpinionList(params) {
+    return request({
+        url: '/opinion/list',
+        method: 'get',
+        params: params
+    });
+}
+
+/**
  * 新增或修改类型
  * @param params
  * @returns {AxiosPromise}

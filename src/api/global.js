@@ -151,3 +151,38 @@ export function logout() {
     sessionStorageUtil.clear();
     return true;
 }
+
+/**
+ * 响应式调整页面内容
+ */
+export function doAdjustView() {
+    if (GlobalConstant.isShowH5()) {
+        adjustView(1); // 1-调整
+    } else {
+        adjustView(0); // 0-复原
+    }
+}
+// 页面调整，左侧导航栏隐藏，main 区域宽度不限制
+function adjustView(opt) {
+    // 调整主内容区域宽度
+    let mainEle = document.getElementById("main");
+    // 隐藏左侧导航栏
+    let menuEle = document.getElementById("menu");
+    // 调整返回顶部按钮位置
+    let backToTopEle = document.getElementById("back_to_top");
+
+    /*
+    let platformItems = document.querySelectorAll(".platform_item");
+    let lastPlatformItem = null;
+    if (platformItems && platformItems.length > 0) {
+      lastPlatformItem = platformItems[platformItems.length - 1];
+    }
+    */
+    if (opt === 1) { // 调整
+        if (mainEle) mainEle.style.padding = "0";
+        if (menuEle) menuEle.style.display = "none";
+    } else { // 复原
+        if (mainEle) mainEle.style.padding = "0 15% 0 25%";
+        if (menuEle) menuEle.style.display = "unset";
+    }
+}

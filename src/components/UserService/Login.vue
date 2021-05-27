@@ -1,10 +1,10 @@
 <template>
   <div class="mypages_login_dialog">
-    <el-dialog width="20%" v-model="getDialogVisible" :top="`7vh`"
+    <el-dialog v-model="getDialogVisible" :top="`7vh`"
                :show-close="false"
                :before-close="beforeClose"
                :destroy-on-close="true">
-      <el-form class="mypages_login_form" ref="loginForm" :model="userLogin" :rules="rules" label-width="100px">
+      <el-form class="mypages_login_form" ref="loginForm" :model="userLogin" :rules="rules">
         <div class="login_title">
           <span class="login_title_item">用</span>
           <span class="login_title_item">户</span>
@@ -265,6 +265,7 @@ export default {
 
 <style scoped>
 .mypages_login_form {
+  width: 220px;
   margin-top: -50px;
   padding: 17px;
 }

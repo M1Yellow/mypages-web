@@ -1,9 +1,9 @@
 <template>
   <div class="change_following_type">
-    <el-dialog title="变更分组" width="40%" v-model="getDialogVisible" :top="`7vh`"
+    <el-dialog title="变更分组" v-model="getDialogVisible" :top="`7vh`"
                :before-close="beforeClose"
                :destroy-on-close="true">
-      <el-form ref="changeFollowingTypeForm" :model="userFollowingRelation" :rules="rules" label-width="100px">
+      <el-form ref="changeFollowingTypeForm" :model="userFollowingRelation" :rules="rules">
         <el-form-item label="用户名">
           <el-input class="change_following_type_name" maxlength="20" show-word-limit autosize disabled
                     v-model="userFollowingRelation.name"></el-input>
@@ -65,6 +65,8 @@ export default {
         // 页面显示优先级，由低到高：1-10，默认5
         sortNo: 5,
       },
+      // 原始类型id，用于变更分组后续操作
+      oldTypeId: null,
       // 平台列表
       platformList: null,
       // 分类类型列表
@@ -120,6 +122,10 @@ export default {
       // 设置 followingId
       if (!this.userFollowingRelation.followingId) {
         this.userFollowingRelation.followingId = this.$store.state.userFollowingRelation.instance.followingId;
+      }
+      // 设置原始类型id
+      if (this.userFollowingRelation.typeId) {
+        this.oldTypeId = this.userFollowingRelation.typeId;
       }
 
       // 获取排序优先级
@@ -182,6 +188,11 @@ export default {
       for (let key in this.userFollowingRelation) {
         if (this.userFollowingRelation[key] === null) continue;
         formData.append(key, this.userFollowingRelation[key]);
+      }
+
+      // 补充原始类型id
+      if (this.oldTypeId) {
+        formData.append("oldTypeId", this.oldTypeId);
       }
 
       // 调试，不请求接口

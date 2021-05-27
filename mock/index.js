@@ -40,7 +40,7 @@ mockFiles.keys().forEach(key => {
 mocks.forEach(item => {
     // mock 拦截的路径需要跟 request 请求的路径一致，或者使用正则匹配
     //Mock.mock(/\/home\/platformList(|\?\S*)$/, item.type, item.response);
-    //Mock.mock(process.env.VUE_APP_BASE_API + item.url, item.type, item.response);
+    //Mock.mock(process.env.VUE_APP_SERVER_API + item.url, item.type, item.response);
 });
 
 let homeData = jsonUtils.parseJsonFile('/json/home/platformList.json');

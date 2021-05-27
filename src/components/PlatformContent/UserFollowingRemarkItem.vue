@@ -12,7 +12,7 @@ export default {
 <style scoped>
 .following_remark_item {
   float: left !important;
-  margin: 0px 7px 0px 0px;
+  margin: 3px 7px 3px 0px;
   padding: 3px 5px;
   font-size: 13px;
   color: ghostwhite;

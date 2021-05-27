@@ -12,7 +12,9 @@
     </platform-type-name>
     <platform-opinion v-if="typeItem.userOpinionList && typeItem.userOpinionList.length > 0"
                       v-bind:opinions="typeItem.userOpinionList"
-                      v-bind:userOpinionListSize="typeItem.userOpinionList.length">
+                      v-bind:userOpinionListSize="typeItem.userOpinionList.length"
+                      v-bind:platformId="typeItem.userFollowingTypeInfo.platformId"
+                      v-bind:typeId="typeItem.userFollowingTypeInfo.id">
     </platform-opinion>
     <platform-following v-if="needLogin"
                         v-bind:followings="typeItem.userFollowingListPage.records">

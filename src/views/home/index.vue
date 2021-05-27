@@ -45,8 +45,9 @@ import CommonItem from "@/components/Common/CommonItem";
 import PlatformItem from "@/components/PlatformContent/PlatformItem";
 import BaseBackTop from "@/components/BaseBackTop";
 import {getJsonData, initAllData, initDefaultData} from '@/api/home';
-import {getUserId, checkToken} from '@/utils/auth'
-import {getUserFollowingTypeList, getUserPlatformList} from "@/api/global";
+import {checkToken, getUserId} from '@/utils/auth'
+import {doAdjustView, getUserFollowingTypeList, getUserPlatformList} from "@/api/global";
+import GlobalConstant from "@/constant/GlobalConstant";
 
 /*
 定义常量、变量
@@ -72,7 +73,7 @@ export default {
   data() {
     return {
       userId: null,
-      baseApi: process.env.VUE_APP_BASE_API,
+      baseApi: process.env.VUE_APP_SERVER_API,
       active: 0, // 当前激活的导航索引
       addPlatformShow: false,
       platformList: null
@@ -92,8 +93,13 @@ export default {
   },
   mounted() { // DOM 初始化完成，其中的方法只执行一次
     //console.log(process.env.NODE_ENV);
-    //console.log(process.env.VUE_APP_BASE_API);
+    //console.log(process.env.VUE_APP_SERVER_API);
     //if (process.env.VUE_APP_MOCK) console.log("VUE_APP_MOCK=" + process.env.VUE_APP_MOCK);
+    // 根据页面缩放比例，调整视图内容
+    doAdjustView();
+    // 监听页面缩放
+    window.addEventListener('resize', doAdjustView);
+    // 初始化滚出监听参数
     this.initScrollParams();
     // 监听滚动事件
     window.addEventListener('scroll', this.preOnScroll);
@@ -101,6 +107,7 @@ export default {
   destroy() {
     // 必须移除监听器，不然当该vue组件被销毁了，监听器还在就会出错
     window.removeEventListener('scroll', this.preOnScroll);
+    window.removeEventListener('resize', doAdjustView);
   },
   methods: {
     // 初始化滚动监听参数

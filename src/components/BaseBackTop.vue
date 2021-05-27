@@ -1,29 +1,49 @@
 <template>
-  <el-backtop class="back-to-top" :right="163" :bottom="100">
+  <el-backtop id="back_to_top" :class="itemStyle">
     <i class="el-icon-top"></i>
   </el-backtop>
 </template>
 
 <script>
+import {doAdjustView} from "@/api/global";
+import GlobalConstant from '@/constant/GlobalConstant'
+
 export default {
-  name: "BaseBackTop"
+  name: "BaseBackTop",
+  data() {
+    return {
+      itemStyle: {back_to_top: true}
+    }
+  },
+  mounted() {
+    // 根据页面缩放比例，调整视图内容
+    this.doNewAdjustView();
+    // 监听页面缩放
+    window.addEventListener('resize', this.doNewAdjustView);
+  },
+  destroy() {
+    // 必须移除监听器，不然当该vue组件被销毁了，监听器还在就会出错
+    window.removeEventListener('resize', this.doNewAdjustView);
+  },
+  methods: {
+    doNewAdjustView() {
+      this.initItemClass();
+    },
+    initItemClass() {
+      if (GlobalConstant.isShowH5()) {
+        this.itemStyle = {
+          back_to_top_h5: true,
+        }
+      } else {
+        this.itemStyle = {
+          back_to_top: true,
+        }
+      }
+    },
+  },
 }
 </script>
 
 <style scoped>
-.back-to-top {
-  display: flex; /* 弹性布局 */
-  justify-content: center; /* 内容调整 */
-  align-items: center; /* 居中 */
-  font-size: 27px;
-  /*color: mediumseagreen;*/
-  /*background-color: #f2f5f6;*/
-  border-radius: unset;
-  box-shadow: 0 0 6px rgba(0,0,0,.12);
-  line-height: 40px;
-}
-.back-to-top:hover {
-  background-color: unset;
-}
 
 </style>

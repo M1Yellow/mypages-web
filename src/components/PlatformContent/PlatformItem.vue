@@ -7,7 +7,9 @@
                    v-bind:userFollowingTypeListSize="platformItem.userFollowingTypeList === null ? 0 : platformItem.userFollowingTypeList.length">
     </platform-name>
     <platform-opinion v-if="platformItem.platformOpinionList && platformItem.platformOpinionList.length > 0"
-                      v-bind:opinions="platformItem.platformOpinionList">
+                      v-bind:opinions="platformItem.platformOpinionList"
+                      v-bind:platformId="platformItem.platformBaseInfo.platformId"
+                      v-bind:typeId="0">
     </platform-opinion>
     <platform-type-item v-if="platformItem.userFollowingTypeList && platformItem.userFollowingTypeList.length > 0"
                         v-for="typeItem in platformItem.userFollowingTypeList"

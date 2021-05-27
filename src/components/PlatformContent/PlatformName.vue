@@ -44,7 +44,8 @@
       </el-col>
       <el-col :span="1" class="more_func">
         <el-dropdown v-if="platformNameShow">
-          <i class="el-icon-setting more_func_btn"></i>
+          <i v-if="platformBaseInfo.platformId === defaultPlatformId" class="el-icon-setting more_func_btn" id="my_func_btn"></i>
+          <i v-else class="el-icon-setting more_func_btn"></i>
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item
@@ -101,7 +102,7 @@ export default {
   data() {
     return {
       needLogin: true,
-      baseApi: process.env.VUE_APP_BASE_API, // 接口服务器地址及图片服务器地址（因为图片放在服务器）
+      baseApi: process.env.VUE_APP_SERVER_API,
       platformNameShow: false,
       maxOpinionNum: this.$GlobalConstant.MAX_OPINION_NUM,
       defaultPlatformId: this.$GlobalConstant.USER_DEFAULT_PLATFORM_ID,
@@ -273,9 +274,13 @@ export default {
 .user_profile_area {
 
 }
-
 .user_profile {
 
+}
+
+#my_func_btn {
+  margin-top: -20px;
+  float: left;
 }
 
 

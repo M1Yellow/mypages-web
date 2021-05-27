@@ -10,6 +10,20 @@ export default class GlobalConstant {
     static USER_DEFAULT_PLATFORM_ID = 1;
     // 用户平台列表缓存KEY
     static USER_PLATFORM_LIST_CACHE_KEY = "USER_PLATFORM_LIST_CACHE_";
+    // 页面主视图区域宽度
+    static MAIN_CONTENT_WIDTH = 1519;
+    // 触发调整的比例
+    static BEGIN_ADJUST_SCALE = 0.8;
+    // 最终调整的比例
+    static FINAL_ADJUST_SCALE = 0.7;
+    // 是否调整显示为 h5
+    static isShowH5 = function () {
+        const scale = document.documentElement.clientWidth / this.MAIN_CONTENT_WIDTH;
+        if (scale && scale < this.BEGIN_ADJUST_SCALE) {
+            return true;
+        }
+        return false;
+    }
 
 
     //================================================================================//

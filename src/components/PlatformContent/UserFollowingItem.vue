@@ -7,7 +7,7 @@
         <a v-if="followingItem.userFollowing.mainPage" v-bind:href="followingItem.userFollowing.mainPage" title="进入主页"
            target="_blank">
           <el-avatar v-if="followingItem.userFollowing.profilePhoto" class="following_item_photo" :shape="circle"
-                     :size="64" :fit="fill" @error="errorHandler">
+                     :fit="fill" @error="errorHandler">
             <img :src="baseApi + followingItem.userFollowing.profilePhoto"/>
           </el-avatar>
         </a>
@@ -75,7 +75,7 @@ export default {
   inject: ['showUnfinishedDialog', 'reload'],
   data() {
     return {
-      baseApi: process.env.VUE_APP_BASE_API,
+      baseApi: process.env.VUE_APP_SERVER_API,
       visible: false,
     };
   },
@@ -312,7 +312,10 @@ export default {
 .following_item_photo {
   /*max-width: 64px;*/
   background: #f3f3f3;
-  /*border: 2px solid hsla(0, 0%, 100%, .4);*/
+  height: 64px;
+  width: 64px;
+  line-height: 64px;
+  /*border: 1px solid hsla(0, 0%, 100%, .4);*/
 }
 
 .following_item_desc_area {

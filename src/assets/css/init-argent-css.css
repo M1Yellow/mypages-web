@@ -6,6 +6,8 @@ html {
 
 body {
     background-color: #f3f3f3;
+    /* 这一句是用来解决在安卓上的点击出现蓝色背景问题 */
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 /* 全局样式 */
@@ -19,8 +21,15 @@ a {
     /*color: #333;*/
     color: inherit;
 }
+
 a:hover, a:visited, a:link, a:active {
     color: inherit;
+}
+
+/* 解决ios上去除微信点击蓝色边框 */
+a:focus, input:focus, p:focus, div:focus {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    /*-webkit-user-modify: read-write-plaintext-only;*/
 }
 
 table {
@@ -32,6 +41,7 @@ input, textarea {
     outline: none;
     border: none;
 }
+
 textarea {
     resize: none;
     overflow: auto;
@@ -92,18 +102,20 @@ i {
     justify-content: center; /* 内容调整 */
     align-items: center; /* 居中 */
 }
+
 .more_func_btn {
     cursor: pointer;
     font-size: 16px;
     color: #ccc;
     transform: rotate(90deg); /* 顺时针旋转90° */
 }
+
 .el-icon-setting {
     font-size: 18px;
 }
 
 /* 下拉框三角 */
-.el-dropdown__popper>.el-popper__arrow {
+.el-dropdown__popper > .el-popper__arrow {
     display: none;
 }
 
@@ -111,4 +123,63 @@ i {
 .el-message-box {
     position: relative;
     top: -30%;
+}
+
+/* element-ui form 表单按钮样式 */
+.func_btn_area {
+    /*text-align: center;*/
+    margin: 10px 0;
+}
+
+.func_btn_submit {
+    margin-right: 10px;
+}
+
+/* element-ui form 表单 label-width */
+.el-form-item__label {
+    width: 100px;
+}
+
+.el-form-item__content {
+    margin-left: 100px;
+}
+
+/* 返回顶部按钮 */
+.back_to_top {
+    display: flex; /* 弹性布局 */
+    justify-content: center; /* 内容调整 */
+    align-items: center; /* 居中 */
+    font-size: 24px;
+    /*color: mediumseagreen;*/
+    /*background-color: #f2f5f6;*/
+    border-radius: unset;
+    box-shadow: 0 0 6px rgba(0, 0, 0, .12);
+    line-height: 40px;
+    right: 163px !important;
+    bottom: 100px !important;
+}
+
+.back_to_top:hover {
+    background-color: unset;
+}
+
+.back_to_top_h5 {
+    display: flex; /* 弹性布局 */
+    justify-content: center; /* 内容调整 */
+    align-items: center; /* 居中 */
+    font-size: 24px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, .12);
+    line-height: 40px;
+    right: 40px !important;
+    bottom: 100px !important;
+}
+
+/* element-ui dialog 宽度 */
+.el-dialog {
+    width: max-content !important;
+}
+
+/* element-ui 气泡框 位置调整 */
+.el-popper {
+    margin-top: -7px!important;
 }
