@@ -40,7 +40,6 @@ mypages-web -- 项目目录
 ├── .env.development -- 开发环境配置
 ├── .env.local -- 在所有的环境中被载入，但会被 git 忽略，可注释为不忽略
 ├── .env.production -- 生产环境配置
-├── .env.test -- 测试环境配置
 ├── .eslintrc.js
 ├── babel.config.js
 ├── Dockerfile -- 构建 docker 镜像的文件
@@ -54,10 +53,10 @@ mypages-web -- 项目目录
 ```
 
 ### 项目演示
-在线体验地址：<br>
+在线体验地址：https://www.m1yellow.cn
 
 效果预览图：<br>
-<img src="https://dd-static.jd.com/ddimg/jfs/t1/164324/3/18381/1292383/607610d7Edca019c3/9dddfac21cf8606e.png" alt="mypages-web 效果预览图" title="mypages-web-preview-long.png" />
+
 
 ### 技术应用
 技术 | 说明 | 官网
