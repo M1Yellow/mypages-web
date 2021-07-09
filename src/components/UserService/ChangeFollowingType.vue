@@ -50,6 +50,8 @@ export default {
   inject: ['userId', 'reload'],
   data() {
     return {
+      // 当前弹窗显示状态
+      currentDialogVisible: false,
       // 用户与关注用户的关联
       userFollowingRelation: {
         // 用户关系表id
@@ -82,10 +84,13 @@ export default {
 
   },
   computed: {
+    // 新增一个 currentDialogVisible 变量，防止 v-model="getDialogVisible" 触发多次，
+    // 为什么会触发多次？可能因为 getDialogVisible() 方法中计算的属性太多了，只要其中有属性值变化，就会触发方法执行
     getDialogVisible() {
-      if (this.$store.state.userFollowingRelation.dialogVisible) { // 为 true，即显示弹窗时，才初始数据
+      if (!this.currentDialogVisible && this.$store.state.userFollowingRelation.dialogVisible) { // 为 true，即显示弹窗时，才初始数据
         // 初始化一些数据
         this.initData();
+        this.currentDialogVisible = true;
       }
       return this.$store.state.userFollowingRelation.dialogVisible;
     },
@@ -246,6 +251,8 @@ export default {
     setDialog() {
       //this.$store.commit('SET_USER_FOLLOWING_RELATION_DIALOG_VISIBLE', false);
       this.setDialogVisible(false);
+      // 重置弹窗标识
+      this.currentDialogVisible = false;
     },
     // 重置数据
     resetParams() {

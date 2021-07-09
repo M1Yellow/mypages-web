@@ -8,7 +8,7 @@ export function getJsonData(filePath) {
 
 export function initAllData(params) {
     return request({
-        url: '/home/platformList',
+        url: process.env.VUE_APP_IS_CLOUD === "true" ? '/admin/home/platformList' : '/home/platformList',
         method: 'get',
         params: params
     });
@@ -16,7 +16,7 @@ export function initAllData(params) {
 
 export function initDefaultData() {
     return request({
-        url: '/home',
+        url: process.env.VUE_APP_IS_CLOUD === "true" ? '/admin/home' : '/home',
         method: 'get',
         //params: params
     });
@@ -24,7 +24,7 @@ export function initDefaultData() {
 
 export function getGlobalProperties(params) {
     return request({
-        url: '/home/properties',
+        url: process.env.VUE_APP_IS_CLOUD === "true" ? '/admin/home/properties' : '/home/properties',
         method: 'get',
         params: params
     });

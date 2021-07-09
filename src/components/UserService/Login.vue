@@ -12,7 +12,7 @@
           <span class="login_title_item">录</span>
         </div>
         <el-input class="login_input mypages_login_username" v-model="userLogin.userName" placeholder="请输入用户名"
-                  maxlength="50" v-on:input="loginNameChange">
+                  maxlength="50" autofocus v-on:input="loginNameChange">
           <template #prefix>
             <i class="el-input__icon el-icon-user"></i>
           </template>
@@ -113,11 +113,13 @@ export default {
       // 用户信息对象
       for (let key in this.userLogin) {
         if (this.userLogin[key] === null) continue;
-        if (key === 'password') { // TODO 密码加密
+        /*
+        if (process.env.VUE_APP_IS_CLOUD === 'false' && key === 'password') { // TODO 密码加密，微服务版本使用了 oauth 认证，在服务端加密
           formData.append(key, this.$md5(this.userLogin[key])); // 注意，append 方法 key 相同，会往后追加内容，而不是覆盖，导致内容错误
         } else {
-          formData.append(key, this.userLogin[key]);
         }
+        */
+        formData.append(key, this.userLogin[key]);
       }
 
       // 调试，不请求接口
@@ -245,7 +247,7 @@ export default {
         created: payload.iat, // token 认证时间，单位：秒
         expired: payload.exp, // token 过期时间，单位：秒
         userBaseInfo: {
-          userId: payload.sub,
+          userId: payload.sub ? payload.sub : payload.userId, // 兼容微服务版本
           userName: payload.username,
         }
       }

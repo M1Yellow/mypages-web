@@ -173,7 +173,7 @@ export default {
       // 用于判断文件提交方法是否执行完成
       isFileSelected: false,
       // 跨域请求地址前缀
-      baseApi: process.env.VUE_APP_SERVER_API,
+      baseApi: process.env.VUE_APP_SERVER_API + process.env.VUE_APP_IMAGE_SERVER_PATH,
       // 校验规则
       rules: {
         name: [
@@ -329,7 +329,7 @@ export default {
         //this.$message.error('请输入正确的网页地址');
         return false;
       }
-      if (!this.userFollowing.isUser && !this.isFileSelected) {
+      if (!this.userFollowing.isUser && !this.isFileSelected && !this.userFollowing.profilePhoto) {
         this.$message.error('非用户需要上传头像！');
         return false;
       }

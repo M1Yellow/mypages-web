@@ -20,7 +20,7 @@ import request from '@/utils/request'
  */
 export function login(params) {
     return request({
-        url: '/user/login',
+        url: process.env.VUE_APP_IS_CLOUD === "true" ? '/god/user/login' : '/user/login',
         method: 'post',
         data: params
     });
@@ -34,7 +34,7 @@ export function login(params) {
  */
 export function logout(params) {
     return request({
-        url: '/user/logout',
+        url: process.env.VUE_APP_IS_CLOUD === "true" ? '/god/user/logout' : '/user/logout',
         method: 'post',
         data: params
     });
@@ -48,7 +48,7 @@ export function logout(params) {
  */
 export function getUserDetail(params) {
     return request({
-        url: '/user/detail',
+        url: process.env.VUE_APP_IS_CLOUD === "true" ? '/god/user/detail' : '/user/detail',
         method: 'get',
         params: params
     });
@@ -62,7 +62,7 @@ export function getUserDetail(params) {
  */
 export function addFollowing(params) {
     return request({
-        url: '/following/add',
+        url: process.env.VUE_APP_IS_CLOUD === "true" ? '/admin/following/add' : '/following/add',
         method: 'post',
         // 简单的文件上传，不用自己在 header 中加 content-type，头部会自动加好
         //headers: { 'content-type': 'multipart/form-data;boundary=' + new Date().getTime() },
@@ -82,7 +82,7 @@ export function addFollowing(params) {
  */
 export function getUserFollowingListPage(params) {
     return request({
-        url: '/following/list',
+        url: process.env.VUE_APP_IS_CLOUD === "true" ? '/admin/following/list' : '/following/list',
         method: 'get',
         params: params
     });
@@ -95,7 +95,7 @@ export function getUserFollowingListPage(params) {
  */
 export function syncFollowingInfo(params) {
     return request({
-        url: '/following/syncOne',
+        url: process.env.VUE_APP_IS_CLOUD === "true" ? '/admin/following/syncOne' : '/following/syncOne',
         method: 'get',
         params: params
     });
@@ -108,7 +108,7 @@ export function syncFollowingInfo(params) {
  */
 export function syncFollowingInfoBatch(params) {
     return request({
-        url: '/following/syncBatch',
+        url: process.env.VUE_APP_IS_CLOUD === "true" ? '/admin/following/syncBatch' : '/following/syncBatch',
         method: 'get',
         params: params
     });
@@ -121,7 +121,7 @@ export function syncFollowingInfoBatch(params) {
  */
 export function changType(params) {
     return request({
-        url: '/following-relation/add',
+        url: process.env.VUE_APP_IS_CLOUD === "true" ? '/admin/following-relation/add' : '/following-relation/add',
         method: 'post',
         data: params
     });
@@ -134,7 +134,7 @@ export function changType(params) {
  */
 export function getPlatformList(params) {
     return request({
-        url: '/platform/list',
+        url: process.env.VUE_APP_IS_CLOUD === "true" ? '/admin/platform/list' : '/platform/list',
         method: 'get',
         params: params
     });
@@ -147,7 +147,7 @@ export function getPlatformList(params) {
  */
 export function getTypeList(params) {
     return request({
-        url: '/type/list',
+        url: process.env.VUE_APP_IS_CLOUD === "true" ? '/admin/type/list' : '/type/list',
         method: 'get',
         params: params
     });
@@ -160,7 +160,7 @@ export function getTypeList(params) {
  */
 export function removeFollowing(params) {
     return request({
-        url: '/following/removeRelation',
+        url: process.env.VUE_APP_IS_CLOUD === "true" ? '/admin/following/removeRelation' : '/following/removeRelation',
         method: 'get',
         params: params
     });
@@ -173,7 +173,7 @@ export function removeFollowing(params) {
  */
 export function addOpinion(params) {
     return request({
-        url: '/opinion/add',
+        url: process.env.VUE_APP_IS_CLOUD === "true" ? '/admin/opinion/add' : '/opinion/add',
         method: 'post',
         data: params
     });
@@ -186,7 +186,7 @@ export function addOpinion(params) {
  */
 export function removeOpinion(params) {
     return request({
-        url: '/opinion/remove',
+        url: process.env.VUE_APP_IS_CLOUD === "true" ? '/admin/opinion/remove' : '/opinion/remove',
         method: 'get',
         params: params
     });
@@ -199,7 +199,7 @@ export function removeOpinion(params) {
  */
 export function getOpinionList(params) {
     return request({
-        url: '/opinion/list',
+        url: process.env.VUE_APP_IS_CLOUD === "true" ? '/admin/opinion/list' : '/opinion/list',
         method: 'get',
         params: params
     });
@@ -212,7 +212,7 @@ export function getOpinionList(params) {
  */
 export function addType(params) {
     return request({
-        url: '/type/add',
+        url: process.env.VUE_APP_IS_CLOUD === "true" ? '/admin/type/add' : '/type/add',
         method: 'post',
         data: params
     });
@@ -225,7 +225,7 @@ export function addType(params) {
  */
 export function removeType(params) {
     return request({
-        url: '/type/remove',
+        url: process.env.VUE_APP_IS_CLOUD === "true" ? '/admin/type/remove' : '/type/remove',
         method: 'get',
         params: params
     });

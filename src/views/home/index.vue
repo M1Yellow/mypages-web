@@ -47,7 +47,6 @@ import BaseBackTop from "@/components/BaseBackTop";
 import {getJsonData, initAllData, initDefaultData} from '@/api/home';
 import {checkToken, getUserId} from '@/utils/auth'
 import {doAdjustView, getUserFollowingTypeList, getUserPlatformList} from "@/api/global";
-import GlobalConstant from "@/constant/GlobalConstant";
 
 /*
 定义常量、变量
@@ -73,7 +72,7 @@ export default {
   data() {
     return {
       userId: null,
-      baseApi: process.env.VUE_APP_SERVER_API,
+      baseApi: process.env.VUE_APP_SERVER_API + process.env.VUE_APP_IMAGE_SERVER_PATH,
       active: 0, // 当前激活的导航索引
       addPlatformShow: false,
       platformList: null
@@ -178,17 +177,22 @@ export default {
         this.userId = getUserId();
       }
       // 延迟加载用户平台、类型列表数据，供修改分类使用
-      if (this.userId) {
+      if (!this.isNeedLogin() && this.userId) {
         setTimeout(() => {
           if (process.env.VUE_APP_ENV !== "prod") {
-            console.log(">>>> get platform and type of user delay.");
+            console.log(">>>> get platform list of user delay.");
           }
           let platformList = getUserPlatformList(this.userId);
           if (platformList && platformList.length > 0) {
-            for (let i = 0; i < platformList.length; i++) {
-              if (!platformList[i]) continue;
-              getUserFollowingTypeList(this.userId, platformList[i].platformId);
-            }
+            setTimeout(() => {
+              for (let i = 0; i < platformList.length; i++) {
+                if (!platformList[i]) continue;
+                if (process.env.VUE_APP_ENV !== "prod") {
+                  console.log(">>>> get following type list of user delay.");
+                }
+                getUserFollowingTypeList(this.userId, platformList[i].platformId);
+              }
+            }, 10000);
           }
         }, 10000);
       }
@@ -210,7 +214,7 @@ export default {
         if (process.env.VUE_APP_ENV !== "prod") {
           console.log(">>>> initAllData params:", JSON.stringify(params));
         }
-        if (this.userId) { // 用户id不为空，加载对应用户数据
+        if (!this.isNeedLogin() && this.userId) { // 用户id不为空，加载对应用户数据
           initAllData(params).then(res => {
             this.platformList = res.data;
           }).catch(e => {

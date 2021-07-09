@@ -2,14 +2,14 @@
   <div id="global_common_components" class="global_common_components">
     <!-- 用户登录全局弹窗 -->
     <user-login></user-login>
-    <!-- 添加关注用户的弹窗 -->
+    <!-- 添加/编辑关注用户的弹窗 -->
     <!-- TODO 更改 key 以强制重新渲染组件 -->
     <add-following :key="addFollowingDialogKey"></add-following>
-    <!-- 新增关注用户类型的弹窗 -->
+    <!-- 添加/编辑关注用户类型的弹窗 -->
     <add-user-following-type></add-user-following-type>
     <!-- 修改关注用户类型的弹窗 -->
     <change-following-type></change-following-type>
-    <!-- 添加用户观点的弹窗 -->
+    <!-- 添加/编辑用户观点的弹窗 -->
     <add-user-opinion></add-user-opinion>
   </div>
 </template>
