@@ -55,6 +55,11 @@ export default {
     PlatformOpinion,
     PlatformTypeItem
   },
+  mounted() {
+    // 元素加载完成后，调用一次 resize 方法，用于适应H5
+    let platformItemResizeEvent = new Event('resize');
+    window.dispatchEvent(platformItemResizeEvent);
+  },
   methods: {},
   watch: {
     /*

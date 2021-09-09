@@ -294,7 +294,8 @@ export default {
 
 <style scoped>
 .following_item {
-  margin: 0px 15px 10px 15px;
+  padding: 7px 0;
+  margin: 0 15px;
   border-bottom: 1px solid rgba(224, 230, 237, 0.62);
   vertical-align: middle;
 }

@@ -162,27 +162,55 @@ export function doAdjustView() {
         adjustView(0); // 0-复原
     }
 }
+
 // 页面调整，左侧导航栏隐藏，main 区域宽度不限制
 function adjustView(opt) {
     // 调整主内容区域宽度
     let mainEle = document.getElementById("main");
     // 隐藏左侧导航栏
     let menuEle = document.getElementById("menu");
-    // 调整返回顶部按钮位置
-    let backToTopEle = document.getElementById("back_to_top");
 
-    /*
-    let platformItems = document.querySelectorAll(".platform_item");
-    let lastPlatformItem = null;
-    if (platformItems && platformItems.length > 0) {
-      lastPlatformItem = platformItems[platformItems.length - 1];
-    }
-    */
     if (opt === 1) { // 调整
         if (mainEle) mainEle.style.padding = "0";
         if (menuEle) menuEle.style.display = "none";
+        // 调整平台内容页面布局
+        adjustPlatformItem(opt);
     } else { // 复原
         if (mainEle) mainEle.style.padding = "0 15% 0 25%";
         if (menuEle) menuEle.style.display = "unset";
+        // 调整平台内容页面布局
+        adjustPlatformItem(opt);
+    }
+}
+
+// 调整平台内容页面布局
+function adjustPlatformItem(opt) {
+
+    let platformItems = document.querySelectorAll(".platform_item");
+    //console.log(platformItems);
+    if (!platformItems || platformItems.length < 1) return;
+
+    for (let i = 0; i < platformItems.length; i++) {
+        if (opt === 1) { // 调整
+            platformItems[i].style.margin = "unset";
+            platformItems[i].style.boxShadow = "unset";
+            platformItems[i].style.borderRadius = "unset";
+            platformItems[i].style.minHeight = "unset";
+
+            // 最后一个元素
+            if (i === platformItems.length - 1) {
+                platformItems[i].style.marginBottom = "unset";
+            }
+        } else { // 复原
+            platformItems[i].style.margin = "10px";
+            platformItems[i].style.boxShadow = "0 3px 10px 0 rgba(219, 219, 219, 0.5)";
+            platformItems[i].style.borderRadius = "6px";
+            platformItems[i].style.minHeight = "600px";
+
+            // 最后一个元素
+            if (i === platformItems.length - 1) {
+                platformItems[i].style.marginBottom = "100px";
+            }
+        }
     }
 }
