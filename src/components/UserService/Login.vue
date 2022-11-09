@@ -19,7 +19,7 @@
         </el-input>
         <el-input class="login_input mypages_login_password" v-model="userLogin.password" placeholder="请输入密码"
                   show-password
-                  maxlength="100" v-on:input="loginPwdChange">
+                  maxlength="100" v-on:input="loginPwdChange" @keyup.enter="onSubmit('loginForm')">
           <template #prefix>
             <i class="el-input__icon el-icon-lock"></i>
           </template>
