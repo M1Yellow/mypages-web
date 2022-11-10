@@ -10,6 +10,8 @@ import '@/assets/css/init-argent-css.css';
 // Element-ui 组件依赖
 import ElementPlus from 'element-plus';
 import 'element-plus/lib/theme-chalk/index.css';
+// 自定义封装的 ElMessage
+import {message} from '@/utils/resetMessage';
 // markdown-it 组件依赖
 import VueMarkdownIt from 'vue3-markdown-it';
 import 'github-markdown-css/github-markdown.css';
@@ -48,6 +50,7 @@ app.mount('#app');
 app.config.globalProperties.$md5 = md5;
 app.config.globalProperties.$base64 = Base64;
 app.config.globalProperties.$GlobalConstant = GlobalConstant;
+app.config.globalProperties.$message = message;
 
 
 // 标签栏标题

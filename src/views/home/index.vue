@@ -202,6 +202,7 @@ export default {
       };
       if (process.env.VUE_APP_MOCK === "true") { // 【本地环境】获取本地 json 文件数据
         console.log(">>>> homeApi.getJsonData");
+        // public 目录下
         getJsonData("/json/home/platformList.json").then(response => {
           //console.log(response);
           this.platformList = response.data;

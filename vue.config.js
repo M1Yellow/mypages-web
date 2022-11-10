@@ -2,7 +2,7 @@
 
 //const webpack = require('webpack');
 module.exports = {
-    publicPath: "/mypages", // 部署二级路径项目时配置
+    publicPath: "/mypages", // TODO 部署二级路径项目时配置
     outputDir: "dist", // 运行时生成的生产环境构建文件的目录(默认''dist''，构建之前会被清除)
     assetsDir: "", //放置生成的静态资源(s、css、img、fonts)的(相对于 outputDir 的)目录(默认'')
     indexPath: "index.html", //指定生成的 index.html 的输出路径(相对于 outputDir)也可以是一个绝对路径。
@@ -18,7 +18,7 @@ module.exports = {
             filename: 'index.html',
             // 当使用 title 选项时，
             // template 中的 title 标签需要是 <title><%= htmlWebpackPlugin.options.title %></title>
-            title: 'Index Page',
+            title: 'mypages',
             // 在这个页面中包含的块，默认情况下会包含
             // 提取出来的通用 chunk 和 vendor chunk。
             chunks: ['chunk-vendors', 'chunk-common', 'index']

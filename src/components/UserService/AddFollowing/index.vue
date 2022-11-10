@@ -218,7 +218,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions({
+    ...mapActions({ //一组方法，对应到状态存储 store 中 actions 定义的具体方法
       setDialogVisible: 'userFollowing/setDialogVisible',
       setIsShowFollowingType: 'userFollowing/setIsShowFollowingType',
       setViewItem: 'userFollowing/setViewItem'

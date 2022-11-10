@@ -71,7 +71,7 @@ const userFollowing = {
     getters: {},
     // 一组方法，是改变 store 中状态的执行者，只能是同步操作。
     // TODO 注意，mutations 中的属性不能跟其他 mutations 同名，整个 store 相当于一个类，mutations 中的事件类型 (type) 相当于类中的属性，属性自然不能重名
-    mutations: {
+    mutations: { //state 执行管理员，所有修改操作的入口
         [MUTATION_TYPES.SET_CHANGE_ADD_FOLLOWING_DIALOG_KEY](state, val) {
             state.changeAddFollowingDialogKey = val;
         },
@@ -138,7 +138,7 @@ const userFollowing = {
 
     },
     // 一组方法，其中可以包含异步操作。
-    actions: {
+    actions: { //
         setChangeAddFollowingDialogKey({commit}, val) {
             commit(MUTATION_TYPES.SET_CHANGE_ADD_FOLLOWING_DIALOG_KEY, val);
         },

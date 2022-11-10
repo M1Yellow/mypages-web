@@ -1,8 +1,9 @@
 import axios from 'axios'
-import {ElMessage, ElMessageBox} from 'element-plus'
+import {ElMessageBox} from 'element-plus'
+import {message} from '@/utils/resetMessage'
+import GlobalConstant from '@/constant/GlobalConstant'
 import store from '@/store'
-import {getToken, getTokenHeader, checkToken} from '@/utils/auth'
-import {getNewObjByJson} from "@/utils/index";
+import {getToken, getTokenHeader} from '@/utils/auth'
 
 // 创建 axios 实例
 const service = axios.create({
@@ -50,49 +51,32 @@ service.interceptors.response.use(
         const res = response.data;
         //console.log("request response: " + res.code + "-" + res.message);
         if (res.code !== 200) {
-            if (res.code === 500) { // 500-服务器接口出错
-                ElMessage({
-                    message: res.message ? res.message : API_ERROR_DEFAULT_MSG,
-                    type: 'error',
-                    duration: 3 * 1000
-                });
-            } else if (res.code === 401) { // 401-未登录;
-                ElMessageBox.confirm('您的登录状态已失效，请重新登录', '登录提示', {
-                    confirmButtonText: '重新登录',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    // 显示登录弹窗
-                    //store.commit('SET_USER_LOGIN_DIALOG_VISIBLE', true);
-                    store.dispatch('userLogin/setDialogVisible', true);
-                }).catch(() => { // 点取消，或空白区域，跳转默认数据首页
-                    /*
-                    ElMessage({
-                        message: res.message ? res.message : API_ERROR_DEFAULT_MSG,
-                        type: 'error',
-                        duration: 3 * 1000
+            if (res.code === 401) { // 401-未登录;
+                // 控制确认提示框只弹一次，避免多个请求时重复弹出
+                if (document.getElementsByClassName(GlobalConstant.GLOBAL_CONFIRM_BOX_CLASS).length === 0) {
+                    ElMessageBox.confirm('您的登录状态已失效，请重新登录', '登录提示', {
+                        confirmButtonText: '重新登录',
+                        cancelButtonText: '取消',
+                        type: 'warning',
+                        customClass: GlobalConstant.GLOBAL_CONFIRM_BOX_CLASS
+                    }).then(() => { // 确认
+                        // 显示登录弹窗
+                        //store.commit('SET_USER_LOGIN_DIALOG_VISIBLE', true);
+                        store.dispatch('userLogin/setDialogVisible', true);
+                    }).catch(() => { // 点取消，或空白区域，因为登录状态失效了，可以跳转只有默认数据的首页
+                        // TODO
+                    }).finally(() => {
+                        // TODO
                     });
-                    */
-                });
-            } else if (res.code === 403) { // 403-没有权限;
-                ElMessage({
-                    message: res.message ? res.message : API_ERROR_DEFAULT_MSG,
-                    type: 'error',
-                    duration: 3 * 1000
-                });
-            } else if (res.code === 400) { // 400-方法校验失败;
-                ElMessage({
-                    message: res.message ? res.message : API_ERROR_DEFAULT_MSG,
-                    type: 'error',
-                    duration: 3 * 1000
-                });
+                }
+            } else if (res.code === 500) { // 500-服务器接口出错
+                message.error(res.message ? res.message : API_ERROR_DEFAULT_MSG);
+            } else if (res.code === 403) { // 403-没有权限
+                message.error(res.message ? res.message : API_ERROR_DEFAULT_MSG);
+            } else if (res.code === 400) { // 400-方法校验失败
+                message.error(res.message ? res.message : API_ERROR_DEFAULT_MSG);
             } else { // 其他，默认
-                // 默认提示
-                ElMessage({
-                    message: API_ERROR_DEFAULT_MSG ? API_ERROR_DEFAULT_MSG : res.message,
-                    type: 'error',
-                    duration: 3 * 1000
-                });
+                message.error(API_ERROR_DEFAULT_MSG ? API_ERROR_DEFAULT_MSG : res.message);
             }
 
             //return Promise.reject('error');
@@ -103,11 +87,7 @@ service.interceptors.response.use(
     },
     error => {
         console.log(error); // for debug
-        ElMessage({
-            message: API_ERROR_DEFAULT_MSG ? API_ERROR_DEFAULT_MSG : error.message,
-            type: 'error',
-            duration: 3 * 1000
-        });
+        message.error(API_ERROR_DEFAULT_MSG ? API_ERROR_DEFAULT_MSG : error.message);
         return Promise.reject(error ? error : 'error');
     }
 );

@@ -4,12 +4,14 @@
  */
 export default class GlobalConstant {
     //================================================================================//
-    // 平台相关配置项区域【数值配置放前面，字符串配置放后面】
+    // 平台相关配置项区域
     //================================================================================//
     // 用户默认平台id
     static USER_DEFAULT_PLATFORM_ID = 1;
     // 用户平台列表缓存KEY
     static USER_PLATFORM_LIST_CACHE_KEY = "USER_PLATFORM_LIST_CACHE_";
+    // 带确认按钮的提示框自定义class，避免重复弹出
+    static GLOBAL_CONFIRM_BOX_CLASS = "global-confirm-box";
     // 页面主视图区域宽度
     static MAIN_CONTENT_WIDTH = 1519;
     // 触发调整的比例

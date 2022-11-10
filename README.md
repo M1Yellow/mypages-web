@@ -1,13 +1,15 @@
 # mypages-web
 
 ## 前言
-该项目为前后端分离项目的前端部分，后端项目`mypages`地址：[点我试试](https://github.com/M1Yellow/mypages) 。
+该项目为前后端分离项目的前端部分，后端项目`mypages`地址：[点我试试？](https://github.com/M1Yellow/mypages) 。
 
+<br>
 
 ## 项目介绍
 `mypages-web`是一个聚合多社交平台主页的前端项目，基于 Vue 3 + ElementPlus 实现。
 主要为用户提供可在首页自定义添加社交平台、关注用户、观点看法的业务功能，支持检查用户内容更新及同步用户昵称、签名和头像等功能。
 
+<br>
 
 ## 目录结构
 ```
@@ -52,11 +54,15 @@ mypages-web -- 项目目录
 
 ```
 
+<br>
+
 ### 项目演示
-在线体验地址：https://www.m1yellow.cn
+在线体验地址：https://www.m1yellow.cn/mypages
 
 效果预览图：<br>
+![mypages-web-preview](./public/images/mypages-web-preview.gif)
 
+<br>
 
 ### 技术应用
 技术 | 说明 | 官网
@@ -69,6 +75,7 @@ ElementPlus | 前端UI框架 | [https://element-plus.gitee.io/](https://element-
 Axios | 前端HTTP框架 | [https://github.com/axios/axios](https://github.com/axios/axios)
 Js-cookie | Cookie管理工具 | [https://github.com/js-cookie/js-cookie](https://github.com/js-cookie/js-cookie)
 
+<br>
 
 ## 部署运行
 1. 安装 Node.js 环境
@@ -77,3 +84,5 @@ Js-cookie | Cookie管理工具 | [https://github.com/js-cookie/js-cookie](https:
 4. 在 IDEA Terminal 中运行命令：`npm install`，下载项目依赖
 5. 在 IDEA Terminal 中运行命令：`npm run serve`，以开发环境运行项目，需要访问后端项目接口
 6. 在 IDEA Terminal 中运行命令：`npm run local`，以本地环境运行项目，直接加载本地图片和 json 数据
+
+<br>

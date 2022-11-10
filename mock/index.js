@@ -4,7 +4,7 @@ import * as jsonUtils from './util';
 console.log("==== Data from local mock. ====");
 // 可以设置延迟时间，来真实模拟请求数据的那段请求过程
 Mock.setup({
-    timeout: 0
+    timeout: 100
 });
 
 // Mock.mock( rurl?, rtype?, template|function( options ) )
@@ -43,7 +43,7 @@ mocks.forEach(item => {
     //Mock.mock(process.env.VUE_APP_SERVER_API + item.url, item.type, item.response);
 });
 
-let homeData = jsonUtils.parseJsonFile('/json/home/platformList.json');
+let homeData = jsonUtils.parseJsonFile('/json/home/platformList.json'); // public 目录下
 //console.log(homeData);
 Mock.mock(/\/home\/platformList(|\?\S*)$/, "get", homeData);
 

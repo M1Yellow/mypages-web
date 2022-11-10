@@ -38,7 +38,11 @@ const userLogin = {
 
     },
     // 类似于 Vue 中的计算属性，根据其他 getter 或 state 计算返回值。
-    getters: {},
+    getters: {
+        getVisibleState(state) {
+            return state.dialogVisible;
+        },
+    },
     // 一组方法，是改变 store 中状态的执行者，只能是同步操作。
     // TODO 注意，mutations 中的属性不能跟其他 mutations 同名，整个 store 相当于一个类，mutations 中的事件类型 (type) 相当于类中的属性，属性自然不能重名
     mutations: {

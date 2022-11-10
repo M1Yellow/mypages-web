@@ -16,6 +16,7 @@ export const SET_GLOBAL_PROPERTIES_MAX_OPINION_NUM = 'SET_GLOBAL_PROPERTIES_MAX_
 //================================================================================//
 // userLogin 模块
 //================================================================================//
+export const GET_USER_LOGIN_DIALOG_VISIBLE = 'GET_USER_LOGIN_DIALOG_VISIBLE';
 export const SET_USER_LOGIN_DIALOG_VISIBLE = 'SET_USER_LOGIN_DIALOG_VISIBLE';
 export const SET_USER_LOGIN_DIALOG_TITLE = 'SET_USER_LOGIN_DIALOG_TITLE';
 export const SET_USER_LOGIN_DIALOG_TYPE = 'SET_USER_LOGIN_DIALOG_TYPE';
