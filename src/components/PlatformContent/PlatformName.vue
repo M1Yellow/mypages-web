@@ -102,7 +102,7 @@ export default {
   data() {
     return {
       needLogin: true,
-      baseApi: process.env.VUE_APP_SERVER_API + process.env.VUE_APP_IMAGE_SERVER_PATH,
+      baseApi: process.env.VUE_APP_IMAGE_SERVER_PATH.startsWith("http") ? process.env.VUE_APP_IMAGE_SERVER_PATH : (process.env.VUE_APP_SERVER_API + process.env.VUE_APP_IMAGE_SERVER_PATH),
       platformNameShow: false,
       maxOpinionNum: this.$GlobalConstant.MAX_OPINION_NUM,
       defaultPlatformId: this.$GlobalConstant.USER_DEFAULT_PLATFORM_ID,

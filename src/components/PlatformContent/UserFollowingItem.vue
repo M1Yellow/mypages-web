@@ -75,7 +75,7 @@ export default {
   inject: ['showUnfinishedDialog', 'reload'],
   data() {
     return {
-      baseApi: process.env.VUE_APP_SERVER_API + process.env.VUE_APP_IMAGE_SERVER_PATH,
+      baseApi: process.env.VUE_APP_IMAGE_SERVER_PATH.startsWith("http") ? process.env.VUE_APP_IMAGE_SERVER_PATH : (process.env.VUE_APP_SERVER_API + process.env.VUE_APP_IMAGE_SERVER_PATH),
       visible: false,
     };
   },

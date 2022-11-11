@@ -173,7 +173,7 @@ export default {
       // 用于判断文件提交方法是否执行完成
       isFileSelected: false,
       // 跨域请求地址前缀
-      baseApi: process.env.VUE_APP_SERVER_API + process.env.VUE_APP_IMAGE_SERVER_PATH,
+      baseApi: process.env.VUE_APP_IMAGE_SERVER_PATH.startsWith("http") ? process.env.VUE_APP_IMAGE_SERVER_PATH : (process.env.VUE_APP_SERVER_API + process.env.VUE_APP_IMAGE_SERVER_PATH),
       // 校验规则
       rules: {
         name: [

@@ -72,7 +72,8 @@ export default {
   data() {
     return {
       userId: null,
-      baseApi: process.env.VUE_APP_SERVER_API + process.env.VUE_APP_IMAGE_SERVER_PATH,
+      // TODO 完整 url 便于直接从 OSS 加载图片
+      baseApi: process.env.VUE_APP_IMAGE_SERVER_PATH.startsWith("http") ? process.env.VUE_APP_IMAGE_SERVER_PATH : (process.env.VUE_APP_SERVER_API + process.env.VUE_APP_IMAGE_SERVER_PATH),
       active: 0, // 当前激活的导航索引
       addPlatformShow: false,
       platformList: null
