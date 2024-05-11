@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "local": "vue-cli-service serve --mode local",
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "test": "vue-cli-service serve --mode test",
-    "build:test": "vue-cli-service build --mode test",
-    "lint": "vue-cli-service lint"
+    "local": "SET NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve --mode local",
+    "dev": "SET NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve",
+    "build": "SET NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service build",
+    "test": "SET NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve --mode test",
+    "build:test": "SET NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service build --mode test",
+    "lint": "SET NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service lint"
   },
   "dependencies": {
     "axios": "^0.21.4",

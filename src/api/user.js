@@ -66,7 +66,9 @@ export function addFollowing(params) {
         method: 'post',
         // 简单的文件上传，不用自己在 header 中加 content-type，头部会自动加好
         //headers: { 'content-type': 'multipart/form-data;boundary=' + new Date().getTime() },
-        //headers: { 'content-type': 'application/json;charset=UTF-8' },
+        //headers: {'content-type': 'application/json;charset=utf-8'},
+        // 根据是否有上传文件，设置 content-type，解决 405 Method Not Allowed
+        //headers: params.profile ? {'content-type': 'multipart/form-data'} : {'content-type': 'application/json;charset=utf-8'},
         //data: qs.stringify(params)
         //data: params instanceof FormData ? params : qs.stringify(params)
         //data: JSON.stringify(params)

@@ -1,4 +1,4 @@
-import sessionStorageUtil from "@/utils/sessionStorageUtil";
+import localStorageUtil from "@/utils/localStorageUtil";
 import GlobalConstant from '@/constant/GlobalConstant'
 import {getPlatformList, getTypeList, getUserDetail} from "@/api/user";
 
@@ -15,7 +15,7 @@ export function getUserInfoDetail(userId, userName) {
 
     // 先从缓存获取
     let cacheKey = GlobalConstant.USER_LOGIN_SUCCESS_DETAIL_INFO_CACHE_DATA_KEY + userId;
-    let userInfoDetail = sessionStorageUtil.get(cacheKey);
+    let userInfoDetail = localStorageUtil.get(cacheKey);
     if (userInfoDetail) {
         return userInfoDetail;
     }
@@ -38,7 +38,7 @@ export function getUserInfoDetail(userId, userName) {
             if (userInfoDetail) {
                 // 存入缓存
                 let cacheKey = GlobalConstant.USER_LOGIN_SUCCESS_DETAIL_INFO_CACHE_DATA_KEY + userId;
-                sessionStorageUtil.set(cacheKey, userInfoDetail);
+                localStorageUtil.set(cacheKey, userInfoDetail);
             }
         }
     }).catch(e => {
@@ -64,7 +64,7 @@ export function getUserPlatformList(userId) {
 
     // TODO 先从缓存获取
     let cacheKey = GlobalConstant.USER_PLATFORM_LIST_CACHE_KEY + userId;
-    let platformList = sessionStorageUtil.get(cacheKey);
+    let platformList = localStorageUtil.get(cacheKey);
     if (platformList && platformList.length > 0) {
         return platformList;
     }
@@ -83,7 +83,7 @@ export function getUserPlatformList(userId) {
             platformList = res.data;
             // TODO 存入 sessionStorage，当用户新增或修改类型成功之后，刷新这个值
             if (platformList && platformList.length > 0) {
-                sessionStorageUtil.set(cacheKey, platformList);
+                localStorageUtil.set(cacheKey, platformList);
             }
         }
     }).catch(e => {
@@ -108,7 +108,7 @@ export function getUserFollowingTypeList(userId, platformId) {
 
     // TODO 先从缓存获取
     let cacheKey = GlobalConstant.USER_TYPE_LIST_CACHE_KEY + userId + "_" + platformId;
-    let typeList = sessionStorageUtil.get(cacheKey);
+    let typeList = localStorageUtil.get(cacheKey);
     if (typeList && typeList.length > 0) {
         //console.log(">>>> typeList cached:", JSON.stringify(typeList));
         return typeList;
@@ -129,7 +129,7 @@ export function getUserFollowingTypeList(userId, platformId) {
             typeList = res.data;
             // TODO 存入 sessionStorage，当用户新增或修改类型成功之后，刷新这个值
             if (typeList && typeList.length > 0) {
-                sessionStorageUtil.set(cacheKey, typeList);
+                localStorageUtil.set(cacheKey, typeList);
             }
         }
     }).catch(e => {
@@ -147,8 +147,8 @@ export function getUserFollowingTypeList(userId, platformId) {
  */
 export function logout() {
     let cacheKey = GlobalConstant.USER_LOGIN_SUCCESS_CACHE_DATA_KEY;
-    //sessionStorageUtil.del(cacheKey);
-    sessionStorageUtil.clear();
+    //localStorageUtil.del(cacheKey);
+    localStorageUtil.clear();
     return true;
 }
 

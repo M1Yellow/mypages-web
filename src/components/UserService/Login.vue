@@ -32,7 +32,7 @@
 
 <script>
 import {login} from '@/api/user';
-import sessionStorageUtil from '@/utils/sessionStorageUtil';
+import localStorageUtil from '@/utils/localStorageUtil';
 import {getUserId} from '@/utils/auth';
 import {getUserInfoDetail} from '@/api/global';
 
@@ -245,7 +245,7 @@ export default {
         tokenStart: data.tokenStart,
         token: data.token,
         created: payload.iat, // token 认证时间，单位：秒
-        expired: payload.exp, // token 过期时间，单位：秒
+        expired: payload.exp, // token 过期时间，单位：秒 TODO JWT 过期时间不要设置太长，半小时或一小时到期，但可以使用续签多次，防止泄露
         userBaseInfo: {
           userId: payload.sub ? payload.sub : payload.userId, // 兼容微服务版本
           userName: payload.username,
@@ -258,7 +258,7 @@ export default {
         console.log(">>>> jwtData:", JSON.stringify(jwtData));
       }
       let cacheKey = this.$GlobalConstant.USER_LOGIN_SUCCESS_CACHE_DATA_KEY;
-      sessionStorageUtil.set(cacheKey, jwtData);
+      localStorageUtil.set(cacheKey, jwtData);
       return 0;
     },
   }

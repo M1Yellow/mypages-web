@@ -1,6 +1,5 @@
 import Cookies from 'js-cookie';
 import localStorageUtil from '@/utils/localStorageUtil';
-import sessionStorageUtil from '@/utils/sessionStorageUtil';
 import GlobalConstant from '@/constant/GlobalConstant'
 
 const JWT_DATA_KEY = GlobalConstant.USER_LOGIN_SUCCESS_CACHE_DATA_KEY;
@@ -10,17 +9,17 @@ const TOKEN_KEY = 'token'
 
 
 export function setToken(token) {
-  return sessionStorageUtil.set(TOKEN_KEY, token);
+  return localStorageUtil.set(TOKEN_KEY, token);
 }
 
 export function removeToken() {
-  return sessionStorageUtil.remove(TOKEN_KEY);
+  return localStorageUtil.remove(TOKEN_KEY);
 }
 
 export function getJwtData() {
   //console.log(">>>> getJwtData:",JWT_DATA_KEY);
-  //console.log(">>>> getJwtData:",JSON.stringify(sessionStorageUtil.get(JWT_DATA_KEY)));
-  return sessionStorageUtil.get(JWT_DATA_KEY);
+  //console.log(">>>> getJwtData:",JSON.stringify(localStorageUtil.get(JWT_DATA_KEY)));
+  return localStorageUtil.get(JWT_DATA_KEY);
 }
 
 /**

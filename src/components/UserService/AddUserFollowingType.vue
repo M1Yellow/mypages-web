@@ -28,7 +28,7 @@
 import {addType} from '@/api/user';
 import {getNewObjByJson} from "@/utils";
 import {mapActions} from 'vuex';
-import sessionStorageUtil from "@/utils/sessionStorageUtil";
+import localStorageUtil from "@/utils/localStorageUtil";
 
 export default {
   name: "AddFollowingType",
@@ -173,7 +173,7 @@ export default {
           // TODO 新增或修改类型后清空缓存，后续使用的时候，重新加载数据后再写入缓存
           let cacheKey = this.$GlobalConstant.USER_TYPE_LIST_CACHE_KEY + this.userFollowingType.userId
               + "_" + this.userFollowingType.platformId;
-          sessionStorageUtil.del(cacheKey);
+          localStorageUtil.del(cacheKey);
 
           if (formData.get("id")) { // 有 id，说明是更新操作
             // 页面对象

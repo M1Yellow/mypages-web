@@ -65,24 +65,26 @@ mypages-web -- 项目目录
 <br>
 
 ### 技术应用
-技术 | 说明 | 官网
-----|----|----
-Node.js | 前端环境 | [https://nodejs.org/](https://nodejs.org/)
-Vue | 前端框架 | [https://vuejs.org/](https://vuejs.org/)
-Vuex | 全局状态框架 | [https://vuex.vuejs.org/](https://vuex.vuejs.org/)
-Vue-router | 路由框架 | [https://router.vuejs.org/](https://router.vuejs.org/)
-ElementPlus | 前端UI框架 | [https://element-plus.gitee.io/](https://element-plus.gitee.io/)
-Axios | 前端HTTP框架 | [https://github.com/axios/axios](https://github.com/axios/axios)
-Js-cookie | Cookie管理工具 | [https://github.com/js-cookie/js-cookie](https://github.com/js-cookie/js-cookie)
+| 技术          | 说明         | 官网                                                                               |
+|-------------|------------|----------------------------------------------------------------------------------|
+| Node.js     | 前端环境       | [https://nodejs.org/](https://nodejs.org/)                                       |
+| Vue         | 前端框架       | [https://vuejs.org/](https://vuejs.org/)                                         |
+| Vuex        | 全局状态框架     | [https://vuex.vuejs.org/](https://vuex.vuejs.org/)                               |
+| Vue-router  | 路由框架       | [https://router.vuejs.org/](https://router.vuejs.org/)                           |
+| ElementPlus | 前端UI框架     | [https://element-plus.gitee.io/](https://element-plus.gitee.io/)                 |
+| Axios       | 前端HTTP框架   | [https://github.com/axios/axios](https://github.com/axios/axios)                 |
+| Js-cookie   | Cookie管理工具 | [https://github.com/js-cookie/js-cookie](https://github.com/js-cookie/js-cookie) |
 
 <br>
 
 ## 部署运行
 1. 安装 Node.js 环境
-2. 克隆项目到本地后，在 IDEA 菜单栏点`File-Open`选择项目目录，打开项目
-3. 根目录下的`.env.*` 文件为各个环境的配置文件，主要配置全局变量，包括全局域名配置和后端接口地址
-4. 在 IDEA Terminal 中运行命令：`npm install`，下载项目依赖
-5. 在 IDEA Terminal 中运行命令：`npm run serve`，以开发环境运行项目，需要访问后端项目接口
-6. 在 IDEA Terminal 中运行命令：`npm run local`，以本地环境运行项目，直接加载本地图片和 json 数据
+2. 克隆项目到本地后，IDEA/VSCode 选择项目文件夹打开
+3. **项目根目录**（注意不是磁盘根目录）下的 `.env.*` 文件为各个环境的配置文件，接口地址需自行修改
+4. 命令行执行 `npm install`，下载项目依赖
+5. 命令行执行 `npm run dev`，以开发环境运行项目，需要访问后端项目接口
+6. 命令行执行 `npm run local`，以本地环境运行项目，直接加载本地图片和 json 数据
+7. 命令行执行 `npm run build`，项目构建打包到项目根目录下的 `mypages-web` 文件夹
+8. Nginx/Tomcat 部署 `mypages-web`，具体配置细节可以自行搜索 `Vue项目部署` 相关博客资料
 
 <br>

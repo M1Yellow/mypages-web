@@ -46,7 +46,7 @@
 <script>
 import {removeType} from "@/api/user";
 import {mapActions} from 'vuex';
-import sessionStorageUtil from "@/utils/sessionStorageUtil";
+import localStorageUtil from "@/utils/localStorageUtil";
 
 export default {
   name: "PlatformTypeName",
@@ -184,7 +184,7 @@ export default {
           //pageItem.typeName = null; // 因为是动态绑定，并且用 v-if 判断为 null 后，元素不显示，达到不刷新页面删除的效果
           // 清除类型缓存
           let cacheKey = this.$GlobalConstant.USER_TYPE_LIST_CACHE_KEY + params.userId + "_" + params.platformId;
-          sessionStorageUtil.del(cacheKey);
+          localStorageUtil.del(cacheKey);
 
           this.$message({
             type: "success",
