@@ -147,8 +147,8 @@ export function getUserFollowingTypeList(userId, platformId) {
  */
 export function logout() {
     let cacheKey = GlobalConstant.USER_LOGIN_SUCCESS_CACHE_DATA_KEY;
-    //localStorageUtil.del(cacheKey);
-    localStorageUtil.clear();
+    localStorageUtil.del(cacheKey);
+    //localStorageUtil.clear(); // 会把站点所有缓存清掉！影响站点其他应用
     return true;
 }
 
