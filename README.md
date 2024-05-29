@@ -1,13 +1,9 @@
-# mypages-web
+## 简介
+`mypages-web` 为 `mypages` 的前端项目，基于 Vue 3 + ElementPlus 实现。
 
-## 前言
-该项目为前后端分离项目的前端部分，后端项目`mypages`地址：[点我试试？](https://github.com/M1Yellow/mypages) 。
+后端项目 👉 **[mypages](https://github.com/M1Yellow/mypages)**
 
-<br>
 
-## 项目介绍
-`mypages-web`是一个聚合多社交平台主页的前端项目，基于 Vue 3 + ElementPlus 实现。
-主要为用户提供可在首页自定义添加社交平台、关注用户、观点看法的业务功能，支持检查用户内容更新及同步用户昵称、签名和头像等功能。
 
 <br>
 
@@ -54,13 +50,18 @@ mypages-web -- 项目目录
 
 ```
 
+
+
 <br>
 
 ### 项目演示
 在线体验地址：https://www.m1yellow.cn/mypages
 
-效果预览图：<br>
+效果预览图：👇
+<br/>
 ![mypages-web-preview](./public/images/mypages-web-preview.gif)
+
+
 
 <br>
 
@@ -75,6 +76,8 @@ mypages-web -- 项目目录
 | Axios       | 前端HTTP框架   | [https://github.com/axios/axios](https://github.com/axios/axios)                 |
 | Js-cookie   | Cookie管理工具 | [https://github.com/js-cookie/js-cookie](https://github.com/js-cookie/js-cookie) |
 
+
+
 <br>
 
 ## 部署运行
@@ -86,5 +89,6 @@ mypages-web -- 项目目录
 6. 命令行执行 `npm run local`，以本地环境运行项目，直接加载本地图片和 json 数据
 7. 命令行执行 `npm run build`，项目构建打包到项目根目录下的 `mypages-web` 文件夹
 8. Nginx/Tomcat 部署 `mypages-web`，具体配置细节可以自行搜索 `Vue项目部署` 相关博客资料
+
 
 <br>
