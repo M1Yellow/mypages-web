@@ -17,7 +17,7 @@
                     v-model="userFollowing.name"></el-input>
         </el-form-item>
         <el-form-item class="add_following_form_item" label="用户主页" prop="mainPage">
-          <el-input class="add_following_homepage" maxlength="100" show-word-limit autosize
+          <el-input class="add_following_homepage" maxlength="200" show-word-limit autosize
                     v-model="userFollowing.mainPage"></el-input>
         </el-form-item>
         <el-form-item class="add_following_form_item" label="个性签名" prop="signature" v-if="!userFollowing.isUser">
