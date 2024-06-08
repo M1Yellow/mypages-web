@@ -571,6 +571,7 @@ export default {
       // 用户信息对象
       for (let key in this.userFollowing) {
         if (this.userFollowing[key] === null) continue;
+        if (key === 'remarkList') continue; // 不传 remarkList
         formData.append(key, this.userFollowing[key]);
       }
       // 头像文件
