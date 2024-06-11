@@ -14,10 +14,14 @@
   <!-- 是否显示“展开”按钮 -->
   <div v-if="isShowMoreBtn">
     <div v-if="!isShowMore" class="opinion_up_down">
-      <i class="el-icon-d-arrow-left opinion_down" title="展开" v-on:click="opinionToggle"></i>
+      <i title="展开" >
+        <svg-icon iconName="xia2" className="opinion_down" v-on:click="opinionToggle"></svg-icon>
+      </i>
     </div>
     <div v-if="isShowMore" class="opinion_up_down">
-      <i class="el-icon-d-arrow-right opinion_up" title="收起" v-on:click="opinionToggle"></i>
+      <i title="收起" >
+        <svg-icon iconName="shang2" className="opinion_up" v-on:click="opinionToggle"></svg-icon>
+      </i>
     </div>
   </div>
 </template>
@@ -36,7 +40,7 @@ export default {
       moreOpinions: null, // 更多观点
     };
   },
-  props: ['opinions', 'platformId', 'typeId'],
+  props: ['opinions', 'platformId', 'typeId', 'userOpinionListSize'],
   inject: ['userId'],
   components: {
     PlatformOpinionItem
@@ -116,8 +120,8 @@ export default {
 .opinion_up, .opinion_down {
   cursor: pointer;
   /*padding: 5px;*/
-  color: #ccc;
-  transform: rotate(-90deg); /* 逆时针旋转90° */
+  color: #8a8a8a;
+  /*transform: rotate(-90deg); /* 逆时针旋转90° */
 }
 
 </style>

@@ -3,7 +3,7 @@
     <el-dialog :title="getDialogTitle" v-model="getDialogVisible" :top="`7vh`"
                :before-close="beforeClose"
                :destroy-on-close="true">
-      <el-form ref="addOpinionForm" :model="userOpinion" :rules="rules">
+      <el-form ref="addOpinionForm" :model="userOpinion" :rules="rules" label-position="right" label-width="auto">
         <el-form-item label="观点内容">
           <el-input class="add_opinion_content" type="textarea" :autosize="{ minRows: 2, maxRows: 10 }" maxlength="500"
                     show-word-limit

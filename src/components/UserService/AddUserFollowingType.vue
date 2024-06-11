@@ -3,7 +3,7 @@
     <el-dialog :title="getDialogTitle" v-model="getDialogVisible" :top="`7vh`"
                :before-close="beforeClose"
                :destroy-on-close="true">
-      <el-form ref="addFollowingTypeForm" :model="userFollowingType" :rules="rules">
+      <el-form ref="addFollowingTypeForm" :model="userFollowingType">
         <el-form-item label="类型名称">
           <el-input class="add_following_type_name" maxlength="20" show-word-limit autosize
                     v-model="userFollowingType.typeName"></el-input>

@@ -1,4 +1,4 @@
-/* 初始化覆盖浏览器默认的 user agent stylesheet */
+/* 覆盖浏览器默认的 user agent stylesheet */
 @charset "utf-8";
 html {
 
@@ -95,19 +95,28 @@ i {
     font-style: normal;
 }
 
+/* 聚焦边框 */
+:focus {
+    outline: none;
+}
+
+
 /* 全局自定义样式 */
 /* 更多操作按钮 */
 .more_func {
-    display: flex; /* 弹性布局 */
-    justify-content: center; /* 内容调整 */
-    align-items: center; /* 居中 */
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    align-content: center;
+    flex-direction: row;
 }
 
 .more_func_btn {
     cursor: pointer;
-    font-size: 16px;
-    color: #ccc;
-    transform: rotate(90deg); /* 顺时针旋转90° */
+    font-size: 18px;
+    color: #8a8a8a;
+    /*transform: rotate(90deg); /* 顺时针旋转90° */
 }
 
 .el-icon-setting {
@@ -125,36 +134,40 @@ i {
     top: -30%;
 }
 
-/* element-ui form 表单按钮样式 */
-.func_btn_area {
-    /*text-align: center;*/
-    margin: 10px 0;
+/* 弹出框内容padding设置 */
+.el-dialog__body {
+    padding: 20px;
+    word-break: break-all;
 }
 
+/* element-ui form 表单按钮样式 */
+.func_btn_area {
+    margin-top: 30px;
+}
+
+/* 编辑框按钮居中 */
+.func_btn_area>.el-form-item__content {
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
+}
+
+/* 编辑框两个按钮间距 */
 .func_btn_submit {
     margin-right: 10px;
 }
 
-/* element-ui form 表单 label-width */
-.el-form-item__label {
-    width: 100px;
-}
-
-.el-form-item__content {
-    margin-left: 100px;
+/* svg图标间距 */
+.el-dropdown-menu__item svg {
+    margin-right: 5px;
 }
 
 /* 返回顶部按钮 */
 .back_to_top {
-    display: flex; /* 弹性布局 */
-    justify-content: center; /* 内容调整 */
-    align-items: center; /* 居中 */
-    font-size: 24px;
-    /*color: mediumseagreen;*/
-    /*background-color: #f2f5f6;*/
-    border-radius: unset;
-    box-shadow: 0 0 6px rgba(0, 0, 0, .12);
-    line-height: 40px;
+    border-radius: unset !important;
     right: 163px !important;
     bottom: 100px !important;
 }
@@ -164,12 +177,6 @@ i {
 }
 
 .back_to_top_h5 {
-    display: flex; /* 弹性布局 */
-    justify-content: center; /* 内容调整 */
-    align-items: center; /* 居中 */
-    font-size: 24px;
-    box-shadow: 0 0 6px rgba(0, 0, 0, .12);
-    line-height: 40px;
     right: 40px !important;
     bottom: 100px !important;
 }

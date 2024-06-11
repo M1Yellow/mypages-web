@@ -9,31 +9,31 @@
       </el-col>
       <el-col :span="1" class="more_func">
         <el-dropdown v-if="typeSettingShow">
-          <i class="el-icon-setting more_func_btn"></i>
+          <svg-icon iconName="shezhi" className="more_func_btn"></svg-icon>
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item v-if="userFollowingListSize && userFollowingListSize > 0"
                                 v-on:click="showUnfinishedDialog">
-                <i class="el-icon-search"></i>批量查询更新
+                <svg-icon iconName="sousuo"></svg-icon>批量查询更新
               </el-dropdown-item>
               <el-dropdown-item v-if="userFollowingListSize && userFollowingListSize > 0"
                                 v-on:click="showUnfinishedDialog">
-                <i class="el-icon-refresh"></i>批量同步信息
+                <svg-icon iconName="tongbu"></svg-icon>批量同步信息
               </el-dropdown-item>
               <el-dropdown-item
                   v-on:click="addFollowing(userFollowingTypeInfo.userId, userFollowingTypeInfo.platformId, userFollowingTypeInfo.id)">
-                <i class="el-icon-plus"></i>添加关注用户
+                  <svg-icon iconName="jia1"></svg-icon>添加关注用户
               </el-dropdown-item>
               <el-dropdown-item
                   v-on:click="addOpinion(userFollowingTypeInfo.userId, userFollowingTypeInfo.platformId, userFollowingTypeInfo.id)">
-                <i class="el-icon-plus"></i>添加类型观点
+                  <svg-icon iconName="jia1"></svg-icon>添加类型观点
               </el-dropdown-item>
               <el-dropdown-item v-if="userFollowingTypeInfo.typeName !== '默认分类'"
                                 v-on:click="editType(userFollowingTypeInfo.userId, userFollowingTypeInfo.platformId, userFollowingTypeInfo)">
-                <i class="el-icon-edit"></i>编辑类型信息
+                <svg-icon iconName="bianji"></svg-icon>编辑类型信息
               </el-dropdown-item>
               <el-dropdown-item v-on:click="removeType(userFollowingTypeInfo)">
-                <i class="el-icon-delete"></i>移除类型条目
+                <svg-icon iconName="shanchu"></svg-icon>移除类型条目
               </el-dropdown-item>
             </el-dropdown-menu>
           </template>

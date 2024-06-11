@@ -6,8 +6,7 @@
       <el-col :span="3" class="following_item_photo_area">
         <a v-if="followingItem.userFollowing.mainPage" v-bind:href="followingItem.userFollowing.mainPage" title="进入主页"
            target="_blank">
-          <el-avatar v-if="followingItem.userFollowing.profilePhoto" class="following_item_photo" :shape="circle"
-                     :fit="fill" @error="errorHandler">
+          <el-avatar v-if="followingItem.userFollowing.profilePhoto" class="following_item_photo" shape="circle" fit="fill">
             <img :src="baseApi + followingItem.userFollowing.profilePhoto"/>
           </el-avatar>
         </a>
@@ -31,29 +30,29 @@
       </el-col>
       <el-col :span="1" class="more_func">
         <el-dropdown>
-          <i class="el-icon-more more_func_btn" :id="'following_item_' + followingItem.userFollowing.id"></i>
+          <svg-icon iconName="sandian-down" className="more_func_btn" :id="'following_item_' + followingItem.userFollowing.id"></svg-icon>
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item v-if="followingItem.userFollowing.isUser" v-on:click="showUnfinishedDialog">
-                <i class="el-icon-search"></i>查询更新
+                <svg-icon iconName="sousuo"></svg-icon>查询更新
               </el-dropdown-item>
               <el-dropdown-item v-if="followingItem.userFollowing.isUser"
                                 v-on:click="syncFollowingInfo(followingItem, followingItem.userFollowing.userId,
                                 followingItem.userFollowing.platformId, followingItem.userFollowing.typeId,
                                 followingItem.userFollowing.followingId, followingItem.userFollowing.name)">
-                <i class="el-icon-refresh"></i>同步信息
+                <svg-icon iconName="tongbu"></svg-icon>同步信息
               </el-dropdown-item>
               <el-dropdown-item v-on:click="editFollowing(followingItem)">
-                <i class="el-icon-edit"></i>编辑关注
+                <svg-icon iconName="bianji"></svg-icon>编辑关注
               </el-dropdown-item>
               <el-dropdown-item v-on:click="changeType(followingItem.userFollowing)">
-                <i class="el-icon-collection-tag"></i>变更分组
+                <svg-icon iconName="shebeifenzuguanli"></svg-icon>变更分组
               </el-dropdown-item>
               <el-dropdown-item
                   v-on:click="removeFollowing(followingItem, followingItem.userFollowing.userId,
                   followingItem.userFollowing.platformId, followingItem.userFollowing.typeId,
                   followingItem.userFollowing.followingId, followingItem.userFollowing.name)">
-                <i class="el-icon-delete"></i>移除关注
+                <svg-icon iconName="shanchu"></svg-icon>移除关注
               </el-dropdown-item>
             </el-dropdown-menu>
           </template>

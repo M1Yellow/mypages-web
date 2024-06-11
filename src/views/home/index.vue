@@ -7,19 +7,17 @@
         v-if="platformList && platformList.length > 0" 表示变量使用之前，先判断和校验，避免出现 undefined 错误。
         TODO 关于变量用之前校验判断，每次都判断会发现代码里面很多判断代码，挺麻烦，且徒增工作量，也可以不判断，到时候报错再检查处理也行。
         -->
-        <li v-if="platformList && platformList.length > 0" class="menu_item"
-            v-for="(platformItem, idx) in platformList"
-            v-bind:key="idx"
-            v-bind:class="{ active: active === idx }"
-            v-on:click="scrollToByTag(idx, platformItem.platformBaseInfo.name)"
-        >
+        <li v-if="platformList && platformList.length > 0" class="menu_item" v-for="(platformItem, idx) in platformList"
+          v-bind:key="idx" v-bind:class="{ active: active === idx }"
+          v-on:click="scrollToByTag(idx, platformItem.platformBaseInfo.name)">
           <img v-if="platformItem && platformItem.platformBaseInfo && platformItem.platformBaseInfo.platformLongLogo"
-               class="nav_img"
-               v-bind:src="baseApi + platformItem.platformBaseInfo.platformLongLogo"/>
+            class="nav_img" v-bind:src="baseApi + platformItem.platformBaseInfo.platformLongLogo" />
         </li>
         <!-- add platform -->
         <li v-if="addPlatformShow" id="add-platform">
-          <i class="el-icon-circle-plus-outline add-platform-icon" title="新增" v-on:click="showUnfinishedDialog"></i>
+          <i title="新增">
+            <svg-icon iconName="jia0" className="add-platform-icon" v-on:click="showUnfinishedDialog"></svg-icon>
+          </i>
         </li>
       </ul>
     </div>
@@ -40,13 +38,13 @@
 </template>
 
 <script>
-import {onScroll, scrollTo} from '@/utils/scroll-navigation';
+import { onScroll, scrollTo } from '@/utils/scroll-navigation';
 import CommonItem from "@/components/Common/CommonItem";
 import PlatformItem from "@/components/PlatformContent/PlatformItem";
 import BaseBackTop from "@/components/BaseBackTop";
-import {getJsonData, initAllData, initDefaultData} from '@/api/home';
-import {checkToken, getUserId} from '@/utils/auth'
-import {doAdjustView, getUserFollowingTypeList, getUserPlatformList} from "@/api/global";
+import { getJsonData, initAllData, initDefaultData } from '@/api/home';
+import { checkToken, getUserId } from '@/utils/auth'
+import { doAdjustView, getUserFollowingTypeList, getUserPlatformList } from "@/api/global";
 
 /*
 定义常量、变量
@@ -161,7 +159,7 @@ export default {
     },
     changeUrl() { // 修复跳转地址栏
       let fromUrl = document.URL, // 获取当前页面的网址信息
-          toUrl; // 最终修改的
+        toUrl; // 最终修改的
       let num = fromUrl.indexOf('#'); //获取第一个 # 的位置信息
       if (num) {
         toUrl = fromUrl.substring(0, num); // 截取网址信息
@@ -262,18 +260,14 @@ export default {
 }
 
 /* 内容区的样式 */
-.content {
-
-}
+.content {}
 
 /* 导航栏每级菜单内图片 */
 .nav_img {
   max-width: 80px;
 }
 
-.menu {
-
-}
+.menu {}
 
 /* 导航栏每个菜单 */
 .menu_item {
@@ -324,14 +318,23 @@ export default {
   font-weight: 600;
 }
 
-#add-platform > .add-platform-icon {
+#add-platform>i {
+  display: flex;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.add-platform-icon {
   font-size: 36px;
-  color: #ccc;
+  color: #bfbfbf;
+  fill: #bfbfbf;
   cursor: pointer;
 }
 
-#add-platform > .add-platform-icon:hover {
+.add-platform-icon:hover {
   color: #409eff;
+  fill: #409eff;
 }
-
 </style>

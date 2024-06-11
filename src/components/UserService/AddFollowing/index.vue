@@ -3,42 +3,43 @@
     <el-dialog :title="getDialogTitle" v-model="getDialogVisible" :top="`7vh`"
                :before-close="beforeClose"
                :destroy-on-close="true">
-      <el-form class="add_following_form" ref="addFollowingForm" :model="userFollowing" :rules="rules">
+      <el-form class="add_following_form" ref="addFollowingForm" :model="userFollowing" :rules="rules" label-position="right" label-width="auto">
         <!-- 编辑关注，不支持更改用户类型 -->
         <el-form-item class="add_following_form_item" label="是否为用户" v-if="!userFollowing.followingId">
           <el-radio-group v-model="userFollowing.isUser" :value="true" prop="isUser" v-on:change="isUserRadioChange">
-            <el-radio :label="true">用户</el-radio>
-            <el-radio :label="false">非用户</el-radio>
+            <el-radio :value="true">用户</el-radio>
+            <el-radio :value="false">非用户</el-radio>
           </el-radio-group>
           <span class="add_following_desc">（非用户须手动录入信息，注意别都选用户）</span>
         </el-form-item>
         <el-form-item class="add_following_form_item" label="用户名" prop="name">
           <el-input class="add_following_name" maxlength="20" show-word-limit autosize
-                    v-model="userFollowing.name"></el-input>
+                    v-model="userFollowing.name" placeholder="可以不填" size="large"></el-input>
         </el-form-item>
         <el-form-item class="add_following_form_item" label="用户主页" prop="mainPage">
           <el-input class="add_following_homepage" maxlength="200" show-word-limit autosize
-                    v-model="userFollowing.mainPage"></el-input>
+                    v-model="userFollowing.mainPage" size="large"></el-input>
         </el-form-item>
         <el-form-item class="add_following_form_item" label="个性签名" prop="signature" v-if="!userFollowing.isUser">
           <el-input type="textarea" maxlength="200" :autosize="{ minRows: 2, maxRows: 10 }" show-word-limit
-                    v-model="userFollowing.signature"></el-input>
+                    v-model="userFollowing.signature" size="large"></el-input>
         </el-form-item>
         <el-form-item class="add_following_form_item" label="分组类型" v-if="isShowFollowingType">
           <el-select class="change_following_type_select change_following_type_list"
-                     v-model="userFollowing.typeId" placeholder="-请选择-">
+                     v-model="userFollowing.typeId" placeholder="-请选择-" size="large">
             <el-option v-for="typeItem in typeList" :label="typeItem.typeName" :value="typeItem.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item class="add_following_form_item" label="排序优先级" prop="sortNo">
-          <el-select class="add_following_sort" v-model="userFollowing.sortNo" placeholder="-请选择-">
+          <el-select class="add_following_sort" v-model="userFollowing.sortNo" placeholder="-请选择-" size="large">
             <el-option v-for="val in sortValues" :label="val" :value="val"></el-option>
           </el-select>
           <span class="add_following_desc">（决定用户的显示顺序，10：优先级最高）</span>
         </el-form-item>
-        <el-form-item class="add_following_form_item" label="标签备注" v-model="userFollowing.remarkList">
+        <el-form-item class="add_following_form_item add_following_remark_form_item" label="标签备注" v-model="userFollowing.remarkList">
           <el-tag
               :key="tag"
+              size="large"
               v-for="tag in userFollowing.remarkList"
               closable
               :disable-transitions="false"
@@ -50,9 +51,8 @@
                 v-if="tag.inputEditVisible"
                 v-model="inputEditValue"
                 ref="saveEditTagInput"
-                size="small"
                 maxlength="20"
-                @keyup.enter.native="handleEditInputConfirm(tag)"
+                @keyup.enter="handleEditInputConfirm(tag)"
                 @blur="handleEditInputConfirm(tag)"
             >
             </el-input>
@@ -62,9 +62,8 @@
               v-if="inputVisible"
               v-model="inputValue"
               ref="saveTagInput"
-              size="small"
               maxlength="20"
-              @keyup.enter.native="handleInputConfirm()"
+              @keyup.enter="handleInputConfirm()"
               @blur="handleInputConfirm()"
           >
           </el-input>
@@ -85,7 +84,7 @@
           >
             <img v-if="imageUrl || userFollowing.profilePhoto"
                  :src="imageUrl ? imageUrl : baseApi + userFollowing.profilePhoto" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            <svg-icon v-else iconName="jia1" className="avatar-uploader-icon"></svg-icon>
           </el-upload>
           <span class="add_following_desc">（文件类型：jpg/jpeg/png/gif；文件大小：不超过 3M）</span>
         </el-form-item>
@@ -177,7 +176,7 @@ export default {
       // 校验规则
       rules: {
         name: [
-          {required: true, message: '用户名称不能为空', trigger: 'blur'},
+          //{required: true, message: '用户名称不能为空', trigger: 'blur'},
           {max: 20, message: '长度不能超过 20 个字符', trigger: 'blur'}
         ],
         mainPage: [
@@ -223,15 +222,6 @@ export default {
       setIsShowFollowingType: 'userFollowing/setIsShowFollowingType',
       setViewItem: 'userFollowing/setViewItem'
     }),
-    watch: {
-
-      /*
-      platformItem : function(newData, oldData){
-        console.log(newData);
-        this.platformId = newData.platformBaseInfo.id;
-      }
-      */
-    },
     initData() {
       if (process.env.VUE_APP_ENV !== "prod") {
         console.log(">>>> userFollowing initData >>>>");
@@ -319,7 +309,9 @@ export default {
       }
       if (!this.userFollowing.name) {
         //this.$message.error('用户名不能为空');
-        return false;
+        //return false;
+        // TODO 可以为空，会同步用户在对应平台的昵称
+        this.userFollowing.name = "momo";
       }
       if (!this.userFollowing.mainPage) {
         //this.$message.error('用户主页不能为空');
@@ -446,14 +438,19 @@ export default {
     showInput() {
       this.inputVisible = true;
       this.$nextTick(() => {
-        this.$refs.saveTagInput.$refs.input.focus();
+        //console.log(this.$refs.saveTagInput); // Proxy(Object) {input: RefImpl, 
+        if (this.$refs.saveTagInput.$refs) this.$refs.saveTagInput.$refs.input.focus();
+        else this.$refs.saveTagInput[0].$refs.input.focus();
       });
     },
     showEditInput(tag) {
       tag.inputEditVisible = true;
       this.inputEditValue = tag.labelName;
       this.$nextTick(() => {
-        this.$refs.saveEditTagInput.$refs.input.focus();
+        //this.$refs.saveEditTagInput.$refs.input.focus(); // saveEditTagInput.$refs undefined
+        //console.log(this.$refs.saveEditTagInput); // [Proxy(Object)] 0 : Proxy(Object) {input: RefImpl,
+        if (this.$refs.saveEditTagInput.$refs) this.$refs.saveEditTagInput.$refs.input.focus();
+        else this.$refs.saveEditTagInput[0].$refs.input.focus();
       });
     },
     handleInputConfirm() {
@@ -726,12 +723,10 @@ export default {
 .avatar-uploader-icon {
   font-size: 16px;
   color: #8c939d;
-  width: 100px;
-  height: 100px;
+  padding: 40px !important;
   line-height: 100px;
   text-align: center;
   border: 1px dashed #d9d9d9;
-  /*border-radius: 50%;*/
   border-radius: 4px;
   overflow: hidden;
   cursor: pointer;

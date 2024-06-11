@@ -4,7 +4,7 @@
                :show-close="false"
                :before-close="beforeClose"
                :destroy-on-close="true">
-      <el-form class="mypages_login_form" ref="loginForm" :model="userLogin" :rules="rules">
+      <el-form class="mypages_login_form" ref="loginForm" :model="userLogin">
         <div class="login_title">
           <span class="login_title_item">用</span>
           <span class="login_title_item">户</span>
@@ -12,19 +12,19 @@
           <span class="login_title_item">录</span>
         </div>
         <el-input class="login_input mypages_login_username" v-model="userLogin.userName" placeholder="请输入用户名"
-                  maxlength="50" autofocus v-on:input="loginNameChange">
+                  maxlength="50" autofocus v-on:input="loginNameChange" size="large">
           <template #prefix>
-            <i class="el-input__icon el-icon-user"></i>
+            <svg-icon iconName="yonghu"></svg-icon>
           </template>
         </el-input>
         <el-input class="login_input mypages_login_password" v-model="userLogin.password" placeholder="请输入密码"
                   show-password
-                  maxlength="100" v-on:input="loginPwdChange" @keyup.enter="onSubmit('loginForm')">
+                  maxlength="100" v-on:input="loginPwdChange" @keyup.enter="onSubmit('loginForm')" size="large">
           <template #prefix>
-            <i class="el-input__icon el-icon-lock"></i>
+            <svg-icon iconName="mima"></svg-icon>
           </template>
         </el-input>
-        <el-button type="primary" :class="loginBtnStyle" :disabled="loginBtnDisabled" @click="onSubmit('loginForm')">登&nbsp;&nbsp;录</el-button>
+        <el-button type="primary" :class="loginBtnStyle" :disabled="loginBtnDisabled" @click="onSubmit('loginForm')" size="large">登&nbsp;&nbsp;录</el-button>
       </el-form>
     </el-dialog>
   </div>
@@ -292,6 +292,15 @@ export default {
 
 .login_input {
   margin-bottom: 15px;
+}
+
+/* 加上 ::v-deep 才能修改成功 */
+::v-deep(.login_input>.el-input__wrapper) {
+  padding: 2px 10px !important;
+}
+
+::v-deep(.login_input>.el-input__wrapper>.el-input__prefix>.el-input__prefix-inner>:last-child) {
+  margin-right: 5px !important;
 }
 
 .login_btn_submit {

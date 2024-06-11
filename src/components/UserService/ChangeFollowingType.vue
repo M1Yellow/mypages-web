@@ -3,7 +3,7 @@
     <el-dialog title="变更分组" v-model="getDialogVisible" :top="`7vh`"
                :before-close="beforeClose"
                :destroy-on-close="true">
-      <el-form ref="changeFollowingTypeForm" :model="userFollowingRelation" :rules="rules">
+      <el-form ref="changeFollowingTypeForm" :model="userFollowingRelation">
         <el-form-item label="用户名">
           <el-input class="change_following_type_name" maxlength="20" show-word-limit autosize disabled
                     v-model="userFollowingRelation.name"></el-input>

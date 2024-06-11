@@ -1,4 +1,3 @@
-import Cookies from 'js-cookie';
 import localStorageUtil from '@/utils/localStorageUtil';
 import GlobalConstant from '@/constant/GlobalConstant'
 

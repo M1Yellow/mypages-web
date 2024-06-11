@@ -1,5 +1,5 @@
 import Mock from 'mockjs';
-import * as jsonUtils from './util';
+import * as jsonUtils from '../utils/json';
 
 console.log("==== Data from local mock. ====");
 // 可以设置延迟时间，来真实模拟请求数据的那段请求过程
@@ -43,7 +43,7 @@ mocks.forEach(item => {
     //Mock.mock(process.env.VUE_APP_SERVER_API + item.url, item.type, item.response);
 });
 
-let homeData = jsonUtils.parseJsonFile('/json/home/platformList.json'); // public 目录下
+let homeData = jsonUtils.parseJsonFile('json/home/platformList.json'); // TODO 项目升级后还没测试
 //console.log(homeData);
 Mock.mock(/\/home\/platformList(|\?\S*)$/, "get", homeData);
 

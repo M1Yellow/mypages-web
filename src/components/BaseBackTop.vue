@@ -1,12 +1,12 @@
 <template>
   <el-backtop id="back_to_top" :class="itemStyle">
-    <i class="el-icon-top"></i>
+    <svg-icon iconName="arrow-top4" color="#409eff"></svg-icon>
   </el-backtop>
 </template>
 
 <script>
 import {doAdjustView} from "@/api/global";
-import GlobalConstant from '@/constant/GlobalConstant'
+import GlobalConstant from '@/constant/GlobalConstant';
 
 export default {
   name: "BaseBackTop",

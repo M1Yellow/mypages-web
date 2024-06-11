@@ -15,7 +15,7 @@ const routes = [
     },
     {
         name: "home",
-        path: "/",
+        path: "/mypages", // TODO 二级目录
         meta: {
             title: "MyPages 我的主页我定义",
             keepAlive: true
@@ -26,7 +26,9 @@ const routes = [
     {
         name: "404",
         //path: "*", // vue 2 的写法
-        path: "/:catchAll(.*)", // vue 3
+        //path: "/:catchAll(.*)", // Cannot GET /mypages-web，匹配不到这里
+        path: '/:pathMatch(.*)*',
+        //path: "/:notFound",
         meta: {
             title: "404 Not Found",
             keepAlive: true
@@ -35,25 +37,10 @@ const routes = [
     }
 ];
 
-/*
-const scrollBehavior = function(to, from, savedPosition) {
-  //console.log('to: ', to);
-  //console.log('from: ', from);
-  if (savedPosition) {
-    return new Promise((resolve, reject) => { // 异步滚动
-      setTimeout(() => {
-        resolve(savedPosition)
-      }, 500);
-    });
-  } else {
-    return { x: 0, y: 0 }
-  }
-};
-*/
-
 
 const router = createRouter({
-    history: createWebHistory(process.env.BASE_URL),
+    history: createWebHistory(),
+    //history: createWebHistory(process.env.BASE_URL), // 如果没有在vue.config.js里面设置publicPath；那么process.env.BASE_URL默认就是根路径 ：/ 
     routes
 });
 

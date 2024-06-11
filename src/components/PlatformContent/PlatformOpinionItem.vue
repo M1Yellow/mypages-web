@@ -3,14 +3,14 @@
        v-on:focusin="changeClass(1)"
        v-on:focusout="changeClass(0)">
     <el-dropdown trigger="click" placement="bottom-end" visible-arrow="false">
-      <vue-markdown-it v-if="opinionItem.opinionContent" :source="opinionItem.opinionContent" class="markdown-body"/>
+      <div v-if="opinionItem.opinionContent" class="markdown-body" v-html="md.render(opinionItem.opinionContent)"/>
       <template #dropdown>
         <el-dropdown-menu>
           <el-dropdown-item v-on:click="editOpinion(opinionItem)">
-            <i class="el-icon-edit"></i>编辑
+            <svg-icon iconName="bianji"></svg-icon>编辑
           </el-dropdown-item>
           <el-dropdown-item v-on:click="removeOpinion(opinionItem)">
-            <i class="el-icon-delete"></i>移除
+            <svg-icon iconName="shanchu"></svg-icon>移除
           </el-dropdown-item>
         </el-dropdown-menu>
       </template>
@@ -19,9 +19,12 @@
 </template>
 
 <script>
-import VueMarkdownIt from 'vue3-markdown-it';
 import {removeOpinion} from '@/api/user';
 import {mapActions} from 'vuex';
+
+const markdown = require('markdown-it')()
+            .use(require('markdown-it-mark'));
+
 
 export default {
   name: "PlatformOpinionItem",
@@ -29,11 +32,12 @@ export default {
   inject: ['showUnfinishedDialog'],
   data() {
     return {
-      itemStyle: {}
+      itemStyle: {},
+      md: markdown
     };
   },
   components: {
-    VueMarkdownIt
+    //MarkdownIt
   },
   methods: {
     ...mapActions({
@@ -173,6 +177,7 @@ export default {
 
 .markdown-body {
   font-size: 15px;
+  background-color: unset !important;
 }
 
 </style>

@@ -1,21 +1,22 @@
 <template>
   <div v-if="platformBaseInfo && platformBaseInfo.name" class="platform_name_area">
     <el-row>
-      <el-col :span="23">
+      <el-col :span="23"
+        :id="(platformBaseInfo.platformId === defaultPlatformId && !needLogin) ? 'platform_user_header' : null">
         <!-- 默认平台-头像显示 -->
         <span v-if="platformBaseInfo.platformId === defaultPlatformId">
           <!-- 需要登录 -->
           <span v-if="needLogin">
             <a v-on:click="showLogin()" title="请登录">
               <img v-if="platformBaseInfo.platformLogo" class="platform_logo"
-                   v-bind:src="baseApi + platformBaseInfo.platformLogo"/>
+                v-bind:src="baseApi + platformBaseInfo.platformLogo" />
             </a>
           </span>
           <!-- 已经登录 -->
           <span v-else class="user_profile_area">
             <a v-if="platformBaseInfo.mainPage" v-bind:href="platformBaseInfo.mainPage" target="_self">
-              <el-avatar v-if="userInfo && userInfo.profilePhoto" :size="50" :shape="circle" :fit="fill">
-                <img class="user_profile" v-bind:src="baseApi + userInfo.profilePhoto"/>
+              <el-avatar v-if="userInfo && userInfo.profilePhoto" :size="50" shape="circle" fit="fill">
+                <img class="user_profile" v-bind:src="baseApi + userInfo.profilePhoto" />
               </el-avatar>
             </a>
           </span>
@@ -24,62 +25,60 @@
         <span v-else>
           <a v-if="platformBaseInfo.mainPage" v-bind:href="platformBaseInfo.mainPage" title="前往站点" target="_blank">
             <img v-if="platformBaseInfo.platformLogo" class="platform_logo"
-                 v-bind:src="baseApi + platformBaseInfo.platformLogo"/>
+              v-bind:src="baseApi + platformBaseInfo.platformLogo" />
           </a>
         </span>
 
         <!-- 默认平台-名称显示 -->
-        <span v-if="platformBaseInfo.platformId === defaultPlatformId"
-              class="platform_name"
-              :id="needLogin ? 'platform_name_need_login' : 'platform_name_after_login'"
-              :title="needLogin ? '登录' : '点我试试'"
-              v-on:click="showLogin()">
+        <span v-if="platformBaseInfo.platformId === defaultPlatformId" class="platform_name"
+          :id="needLogin ? 'platform_name_need_login' : 'platform_name_after_login'" :title="needLogin ? '登录' : '点我试试'"
+          v-on:click="showLogin()">
           {{ needLogin ? '请登录' : (userInfo.userName ? userInfo.userName : platformBaseInfo.name) }}
         </span>
         <!-- 后续添加的平台-名称显示 -->
         <span v-else-if="platformBaseInfo.name" class="platform_name" title="点我试试"
-              v-on:click="platformNameShow = !platformNameShow">
+          v-on:click="platformNameShow = !platformNameShow">
           {{ platformBaseInfo.name }}
         </span>
       </el-col>
       <el-col :span="1" class="more_func">
         <el-dropdown v-if="platformNameShow">
-          <i v-if="platformBaseInfo.platformId === defaultPlatformId" class="el-icon-setting more_func_btn" id="my_func_btn"></i>
-          <i v-else class="el-icon-setting more_func_btn"></i>
+          <svg-icon v-if="platformBaseInfo.platformId === defaultPlatformId" iconName="shezhi" class="more_func_btn"
+            id="my_func_btn"></svg-icon>
+          <svg-icon v-else iconName="shezhi" className="more_func_btn"></svg-icon>
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item
-                  v-if="platformBaseInfo.platformId !== defaultPlatformId && userFollowingTypeListSize && userFollowingTypeListSize > 0"
-                  v-on:click="showUnfinishedDialog">
-                <i class="el-icon-search"></i>批量查询更新
+                v-if="platformBaseInfo.platformId !== defaultPlatformId && userFollowingTypeListSize && userFollowingTypeListSize > 0"
+                v-on:click="showUnfinishedDialog">
+                <svg-icon iconName="sousuo"></svg-icon>批量查询更新
               </el-dropdown-item>
               <el-dropdown-item
-                  v-if="platformBaseInfo.platformId !== defaultPlatformId && userFollowingTypeListSize && userFollowingTypeListSize > 0"
-                  v-on:click="showUnfinishedDialog">
-                <i class="el-icon-refresh"></i>批量同步信息
+                v-if="platformBaseInfo.platformId !== defaultPlatformId && userFollowingTypeListSize && userFollowingTypeListSize > 0"
+                v-on:click="showUnfinishedDialog">
+                <svg-icon iconName="tongbu"></svg-icon>批量同步信息
               </el-dropdown-item>
               <el-dropdown-item v-if="platformBaseInfo.platformId !== defaultPlatformId"
-                                v-on:click="addFollowing(platformBaseInfo.userId, platformBaseInfo.platformId, 0)">
-                <i class="el-icon-plus"></i>添加关注用户
+                v-on:click="addFollowing(platformBaseInfo.userId, platformBaseInfo.platformId, 0)">
+                <svg-icon iconName="jia1"></svg-icon>添加关注用户
               </el-dropdown-item>
               <el-dropdown-item v-if="platformBaseInfo.platformId !== defaultPlatformId"
-                                v-on:click="addType(platformBaseInfo.userId, platformBaseInfo.platformId)">
-                <i class="el-icon-plus"></i>添加类型条目
+                v-on:click="addType(platformBaseInfo.userId, platformBaseInfo.platformId)">
+                <svg-icon iconName="jia1"></svg-icon>添加类型条目
               </el-dropdown-item>
               <el-dropdown-item v-on:click="addOpinion(platformBaseInfo.userId, platformBaseInfo.platformId, 0)">
-                <i class="el-icon-plus"></i>添加平台观点
+                <svg-icon iconName="jia1"></svg-icon>添加平台观点
               </el-dropdown-item>
               <el-dropdown-item v-if="platformBaseInfo.platformId !== defaultPlatformId"
-                                v-on:click="showUnfinishedDialog">
-                <i class="el-icon-edit"></i>编辑平台信息
+                v-on:click="showUnfinishedDialog">
+                <svg-icon iconName="bianji"></svg-icon>编辑平台信息
               </el-dropdown-item>
               <el-dropdown-item v-if="platformBaseInfo.platformId !== defaultPlatformId"
-                                v-on:click="showUnfinishedDialog">
-                <i class="el-icon-delete"></i>移除平台条目
+                v-on:click="showUnfinishedDialog">
+                <svg-icon iconName="shanchu"></svg-icon>移除平台条目
               </el-dropdown-item>
-              <el-dropdown-item v-if="platformBaseInfo.platformId === defaultPlatformId"
-                                v-on:click="doLogout()">
-                <i class="el-icon-switch-button"></i>退出登录
+              <el-dropdown-item v-if="platformBaseInfo.platformId === defaultPlatformId" v-on:click="doLogout()">
+                <svg-icon iconName="tuichu"></svg-icon>退出登录
               </el-dropdown-item>
             </el-dropdown-menu>
           </template>
@@ -90,9 +89,9 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex';
+import { mapActions } from 'vuex';
 import store from "@/store";
-import {getUserInfoDetail, logout} from "@/api/global";
+import { getUserInfoDetail, logout } from "@/api/global";
 
 
 export default {
@@ -190,6 +189,8 @@ export default {
       }).then(() => {
         logout();
         window.location.reload(false);
+      }).catch((e) => {
+        //console.log(e);
       });
     },
     addFollowing(userId, platformId, typeId) {
@@ -253,12 +254,9 @@ export default {
 }
 
 #platform_name_after_login {
-  display: inline-block;
-  margin-top: 15px;
   font-size: 20px;
   font-weight: bold;
   padding-left: 10px;
-  vertical-align: top;
   cursor: pointer;
 }
 
@@ -266,22 +264,19 @@ export default {
   font-size: 20px;
   font-weight: bold;
   padding-left: 10px;
-  vertical-align: middle;
   cursor: pointer;
 }
 
-/* 用户登录后，头像显示样式 */
-.user_profile_area {
-
-}
-.user_profile {
-
+#platform_user_header {
+  display: flex;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 #my_func_btn {
   margin-top: -20px;
   float: left;
 }
-
-
 </style>
