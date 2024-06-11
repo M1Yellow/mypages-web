@@ -8,7 +8,7 @@ import {getToken, getTokenHeader} from '@/utils/auth'
 // 创建 axios 实例
 const service = axios.create({
     // 前端配置跨域
-    baseURL: process.env.VUE_APP_MOCK === "true" ? "" : process.env.VUE_APP_CROS_API,
+    baseURL: process.env.VUE_APP_CROS_API,
 
     // 全局设置请求头
     //headers: { "content-type": "application/x-www-form-urlencoded" },

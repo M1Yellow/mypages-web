@@ -172,8 +172,6 @@ export default {
         formData.append(key, this.userOpinion[key]);
       }
 
-      // 调试，不请求接口
-      //if (process.env.VUE_APP_MOCK === "false") return;
       this.doAddOpinion(formData);
 
     },

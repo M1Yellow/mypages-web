@@ -200,8 +200,6 @@ export default {
         formData.append("oldTypeId", this.oldTypeId);
       }
 
-      // 调试，不请求接口
-      //if (process.env.VUE_APP_MOCK === "false") return;
       this.doChangeType(formData);
 
     },

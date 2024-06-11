@@ -92,7 +92,6 @@ export default {
   mounted() { // DOM 初始化完成，其中的方法只执行一次
     //console.log(process.env.NODE_ENV);
     //console.log(process.env.VUE_APP_SERVER_API);
-    //if (process.env.VUE_APP_MOCK) console.log("VUE_APP_MOCK=" + process.env.VUE_APP_MOCK);
     // 根据页面缩放比例，调整视图内容
     doAdjustView();
     // 监听页面缩放
@@ -199,38 +198,26 @@ export default {
       let params = {
         userId: this.userId
       };
-      if (process.env.VUE_APP_MOCK === "true") { // 【本地环境】获取本地 json 文件数据
-        console.log(">>>> homeApi.getJsonData");
-        // public 目录下
-        getJsonData("/json/home/platformList.json").then(response => {
-          //console.log(response);
-          this.platformList = response.data;
+
+      if (process.env.VUE_APP_ENV !== "prod") {
+        console.log(">>>> initAllData params:", JSON.stringify(params));
+      }
+      if (!this.isNeedLogin() && this.userId) { // 用户id不为空，加载对应用户数据
+        initAllData(params).then(res => {
+          this.platformList = res.data;
         }).catch(e => {
           if (process.env.VUE_APP_ENV !== "prod") {
             console.log(e);
           }
         });
-      } else { // 【测试、开发、正式环境】请求接口数据
-        if (process.env.VUE_APP_ENV !== "prod") {
-          console.log(">>>> initAllData params:", JSON.stringify(params));
-        }
-        if (!this.isNeedLogin() && this.userId) { // 用户id不为空，加载对应用户数据
-          initAllData(params).then(res => {
-            this.platformList = res.data;
-          }).catch(e => {
-            if (process.env.VUE_APP_ENV !== "prod") {
-              console.log(e);
-            }
-          });
-        } else { // 没有用户id，则加载默认内容
-          initDefaultData(params).then(res => {
-            this.platformList = res.data;
-          }).catch(e => {
-            if (process.env.VUE_APP_ENV !== "prod") {
-              console.log(e);
-            }
-          });
-        }
+      } else { // 没有用户id，则加载默认内容
+        initDefaultData(params).then(res => {
+          this.platformList = res.data;
+        }).catch(e => {
+          if (process.env.VUE_APP_ENV !== "prod") {
+            console.log(e);
+          }
+        });
       }
     },
     showUnfinishedDialog() { // 全局提示 “功能未完成”

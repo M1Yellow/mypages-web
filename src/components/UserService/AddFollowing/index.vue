@@ -367,10 +367,7 @@ export default {
       // 判断是否为非用户，只有非用户需要手动上传，用户会自动从主页获取
       //console.log(">>>> isUser:" + this.userFollowing.isUser);
       if (this.userFollowing.isUser) { // 用户只提交用户信息
-        // 调试，不请求接口
-        //if (process.env.VUE_APP_MOCK === "false") return;
         this.doAddFollowing(formData);
-
       } else { // 非用户除了提交用户信息，还要上传头像
         // TODO 如果文件提交方法没有执行，则执行信息保存方法
         if (this.isFileSelected) { // 有选择新文件，走文件提交方法
@@ -574,8 +571,6 @@ export default {
       // 头像文件
       formData.append("profile", params.file);
 
-      // 调试，不请求接口
-      //if (process.env.VUE_APP_MOCK === "false") return;
       this.doAddFollowing(formData);
 
     },

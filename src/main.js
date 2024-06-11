@@ -22,10 +22,6 @@ import '@/utils/rem';
 // 引入自定义的SvgIcon组件
 import SvgIcon from '@/components/SvgIcon';
 import '@/assets/iconfont';
-//console.log(process.env, '当前环境变量');
-// 引入 mockjs 只有在 mock 模式下才会拦截
-//import './mock/index.js';
-if (process.env.VUE_APP_MOCK === "true") require('./mock/index.js');
 
 
 /*

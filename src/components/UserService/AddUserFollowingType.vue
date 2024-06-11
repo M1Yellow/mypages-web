@@ -144,8 +144,6 @@ export default {
         formData.append(key, this.userFollowingType[key]);
       }
 
-      // 调试，不请求接口
-      //if (process.env.VUE_APP_MOCK === "false") return;
       this.doAddType(formData);
 
     },

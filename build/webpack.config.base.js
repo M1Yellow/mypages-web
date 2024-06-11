@@ -17,7 +17,7 @@ module.exports = {
   // build 构建打包输出
   output: {
     //publicPath: '',
-    publicPath: '/mypages/', // TODO 部署二级路径项目时配置
+    publicPath: '/mypages', // TODO 部署二级路径项目时配置，注意，配置 /mypages/ 的话必须全匹配才能访问
     filename: 'js/[name]-[contenthash:8].js', // bundle捆绑好的最终文件命名，name contenthash为webpack提供的变量
     path: path.resolve(__dirname, '../mypages-web'), // 编译生成的文件存放地址
     clean: true, // 清除构建输出目录，5.20.0+ 才可以使用

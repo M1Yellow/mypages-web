@@ -27,7 +27,6 @@ mypages-web -- 项目目录
 │   ├── assets -- 项目内资源目录
 │   ├── components -- 组件目录
 │   ├── minxins -- 暂时没用到
-│   ├── mock -- mockjs 本地模拟数据
 │   ├── router -- 路由配置
 │   ├── store -- 全局状态（变量）存储
 │   ├── utils -- 工具类
