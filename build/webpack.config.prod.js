@@ -2,16 +2,12 @@ const path = require('path');
 const webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const baseConfig = require('./webpack.config.base.js');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 
 // 读取公共配置文件
 const dotenv = require('dotenv');
 const env = dotenv.config({
   path: path.resolve(__dirname, '../.env'), // 配置文件路径
-  encoding: 'utf8', // 编码方式，默认utf8
-  debug: false, // 是否开启debug，默认false
-  override: true, // 是否覆盖原有属性，默认true
 }).parsed;
 if (!env) {
   console.log('配置文件加载失败');
@@ -34,24 +30,6 @@ module.exports = merge(baseConfig, {
   // https://webpack.js.org/configuration/devtool/#production
   //devtool: false,
   devtool:  'nosources-source-map',
-  module: {
-    rules: [
-      {
-        test: /\.(sa|sc|c)ss$/,
-        use: [ // 由下往上调用执行
-          MiniCssExtractPlugin.loader, // 生产环境会自动压缩，不用额外配置
-          //'style-loader', // 开发环境不处理，加快响应速度
-          'css-loader',
-          'postcss-loader',
-          'sass-loader',
-        ],
-        generator: {
-          filename: 'css/[name]-[contenthash:8].css',
-          chunkFilename: 'css/chunk-[name]-[contenthash:8].css',
-        },
-      },
-    ],
-  },
   devServer: {
     allowedHosts: 'all',
     host: '0.0.0.0',
@@ -68,11 +46,6 @@ module.exports = merge(baseConfig, {
         changeOrigin: true, // 设置允许跨域
         secure: false, // 默认情况下不接受将请求转发到https的api服务器上，如果希望支持，可以设置为false
         pathRewrite: {
-          /*
-          这个重写不可省略！因为真正请求的地址并不含 /api
-          当在浏览器控制台中看到请求的地址为：http://localhost:8080/api/data/getdata 时，因为重写了 /api，
-          所以实际上访问的地址是：http://x.x.x.x:x/data/getdata
-          */
           //'^/api': ''
           ['^' + process.env.VUE_APP_CROS_API]: ''
         }
@@ -84,4 +57,37 @@ module.exports = merge(baseConfig, {
       'process.env': JSON.stringify(envConfig),
     }),
   ],
+  // 性能优化
+  optimization: {
+    usedExports: true, // tree shaking，移除不需要的代码，生产环境会自动配置
+    //nodeEnv: false, // webpack 不自动设置 NODE_ENV，在 DefinePlugin 中配置
+    // 代码分离，将重复代码从打包的最终文件 main.js 中分离出来，避免重复加载，浪费性能
+    // https://juejin.cn/post/7006650476158517256
+    // https://webpack.docschina.org/plugins/split-chunks-plugin/
+    runtimeChunk: 'single', // 为每个入口添加一个只含有 runtime 的额外 chunk
+    splitChunks: {
+      chunks: 'all', // 同步 or 异步，async是异步
+      minSize: 20000, // 如果模块大小小于这个值，则不会被分割 20k
+      minRemainingSize: 0, // 最小可保存大小，开发模式下为 0，其他情况下等于 minSize，一般不用手动配置
+      minChunks: 1, // 如果模块被引用次数小于这个值，则不会被分割
+      maxAsyncRequests: 30, // 异步模块，一次最多被加载的次数
+      maxInitialRequests: 30, // 入口模块最多被加载的次数
+      enforceSizeThreshold: 50000, // 强制分割的大小阈值 50k
+      cacheGroups: { // 缓存组
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name(module, chunks, cacheGroupKey) {
+            const allChunksNames = chunks.map((item) => item.name).join('~');
+            let packageName = `${cacheGroupKey}-${allChunksNames}`;
+            try {
+              packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1]; // Cannot read properties of null (reading '1')
+            } catch (e) {
+              // ignore
+            }
+            return `${packageName.replace('@', '')}`;
+          }
+        },
+      },
+    },
+  },
 });

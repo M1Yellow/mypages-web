@@ -37,24 +37,6 @@ module.exports = merge(baseConfig, {
   mode: 'development', // 会自动设置 process.env.NODE_ENV='development'
   // https://webpack.js.org/configuration/devtool/#development
   devtool: 'eval-cheap-module-source-map',
-  module: {
-    rules: [
-      {
-        test: /\.(sa|sc|c)ss$/,
-        use: [ // 由下往上调用执行
-          //MiniCssExtractPlugin.loader,
-          'style-loader', // 开发环境不处理，加快响应速度
-          'css-loader',
-          'postcss-loader',
-          'sass-loader',
-        ],
-        generator: {
-          filename: 'css/[name]-[contenthash:8].css',
-          chunkFilename: 'chunks/[name]-[contenthash:8].css',
-        },
-      },
-    ],
-  },
   devServer: {
     allowedHosts: 'all',
     host: '0.0.0.0',
@@ -105,7 +87,7 @@ module.exports = merge(baseConfig, {
       maxInitialRequests: 30, // 入口模块最多被加载的次数
       enforceSizeThreshold: 50000, // 强制分割的大小阈值 50k
       cacheGroups: {
-        vendor: {
+        vendor: { // cacheGroupKey
           test: /[\\/]node_modules[\\/]/,
           /*
           name(module, chunks, cacheGroupKey) {
@@ -113,18 +95,20 @@ module.exports = merge(baseConfig, {
               .identifier()
               .split('/')
               .reduceRight((item) => item);
-            //const allChunksNames = chunks.map((item) => item.name).join('~');
-            //return `${cacheGroupKey}-${allChunksNames}-${moduleFileName}`;
-            return `npm.${moduleFileName}`;
+            const allChunksNames = chunks.map((item) => item.name).join('~');
+            return `${cacheGroupKey}-${allChunksNames}-${moduleFileName}`;
           },
           */
           // https://segmentfault.com/a/1190000040006212
-          name (module) {
-            // get the name. E.g. node_modules/packageName/not/this/part.js
-            // or node_modules/packageName
-            const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1] // Cannot read properties of null (reading '1')
-            // npm package names are URL-safe, but some servers don't like @ symbols
-            return `npm.${packageName.replace('@', '')}`
+          name(module, chunks, cacheGroupKey) {
+            const allChunksNames = chunks.map((item) => item.name).join('~');
+            let packageName = `${cacheGroupKey}-${allChunksNames}`;
+            try {
+              packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1]; // Cannot read properties of null (reading '1')
+            } catch (e) {
+              // ignore
+            }
+            return `${packageName.replace('@', '')}`;
           }
         },
         
