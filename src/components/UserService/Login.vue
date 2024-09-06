@@ -11,8 +11,8 @@
           <span class="login_title_item">登</span>
           <span class="login_title_item">录</span>
         </div>
-        <el-input class="login_input mypages_login_username" v-model="userLogin.userName" placeholder="请输入用户名"
-                  maxlength="50" autofocus v-on:input="loginNameChange" size="large">
+        <el-input class="login_input mypages_login_username" ref="loginNameAutoFocusInput" v-model="userLogin.userName" placeholder="请输入用户名"
+                  maxlength="50" v-focus v-on:input="loginNameChange" size="large"><!-- autofocus 不起作用，使用自定义指令 v-focus -->
           <template #prefix>
             <svg-icon iconName="yonghu"></svg-icon>
           </template>
@@ -66,6 +66,26 @@ export default {
       }
       return this.$store.state.userLogin.dialogVisible;
     },
+  },
+  directives: {
+    // 自定义指令 v-focus
+    // https://blog.csdn.net/qinglingls/article/details/117536589
+    focus: {
+      //inserted: function(el) {
+      mounted(el) {
+        //console.log(el); // el-input -> el-input__wrapper -> el-input__inner
+        if (!el) return;
+        let elInputWrapper = el.children[0];
+        //console.log(elInputWrapper);
+        if (!elInputWrapper) return;
+        let elInputInner = elInputWrapper.querySelector(".el-input__inner");
+        //console.log(elInputInner);
+        if (!elInputInner) return;
+        setTimeout(function () { // 在登录框显示了之后再聚焦
+          elInputInner.focus();
+        }, 100);
+      }
+    }
   },
   methods: {
     initData() {

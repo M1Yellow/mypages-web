@@ -1,5 +1,5 @@
 <template>
-    <svg :class="svgClass" aria-hidden="true">
+    <svg :class="svgClass">
         <use :xlink:href="iconClassName" :fill="color">
             <!-- <title v-if="svgTitle">{{ svgTitle }}</title> -->
         </use>
