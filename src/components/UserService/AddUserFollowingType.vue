@@ -3,17 +3,21 @@
     <el-dialog :title="getDialogTitle" v-model="getDialogVisible" :top="`7vh`"
                :before-close="beforeClose"
                :destroy-on-close="true">
-      <el-form ref="addFollowingTypeForm" :model="userFollowingType">
+      <el-form ref="addFollowingTypeForm" :model="userFollowingType" label-position="right" label-width="auto">
         <el-form-item label="类型名称">
           <el-input class="add_following_type_name" maxlength="20" show-word-limit autosize
-                    v-model="userFollowingType.typeName"></el-input>
+                    v-model="userFollowingType.typeName" size="large"></el-input>
         </el-form-item>
         <el-form-item label="排序优先级">
+          <!--
           <el-select class="add_following_type_select add_following_type_sort"
                      v-model="userFollowingType.sortNo" placeholder="-请选择-">
             <el-option v-for="val in sortValues" :label="val" :value="val"></el-option>
           </el-select>
-          <span class="add_following_type_desc">（决定类型的显示顺序，10：优先级最高）</span>
+          -->
+          <el-input class="add_following_type_select add_following_type_sort" maxlength="3" show-word-limit autosize
+                    v-model="userFollowingType.sortNo" placeholder="0~100" size="large"></el-input>
+          <span class="add_following_type_desc">（优先级由低到高：0~100）</span>
         </el-form-item>
         <el-form-item class="func_btn_area">
           <el-button type="primary" class="func_btn_submit" @click="onSubmit('addFollowingTypeForm')">确认</el-button>
@@ -46,7 +50,7 @@ export default {
         // 类型名称
         typeName: '',
         // 排序优先级
-        sortNo: 5
+        sortNo: 50
       },
       // 排序优先级，[1, 10] 优先级逐渐递增
       sortValues: [],
@@ -127,6 +131,15 @@ export default {
       this.userFollowingType.typeName = this.userFollowingType.typeName.trim();
       if (this.userFollowingType.typeName.indexOf("默认分类") > -1) {
         this.$message.error('【默认分类】不支持手动添加');
+        return false;
+      }
+      if (!this.userFollowingType.sortNo) {
+        //this.$message.error('优先级不能为空');
+        //return false;
+        this.userFollowingType.sortNo = 50;
+      }
+      if (!/^[0-9]*$/.test(this.userFollowingType.sortNo) || this.userFollowingType.sortNo < 0 || this.userFollowingType.sortNo > 100) {
+        this.$message.error('优先级范围：0~100');
         return false;
       }
 
@@ -232,7 +245,7 @@ export default {
 
 /* 补充说明样式 */
 .add_following_type_desc {
-  margin-left: 10px;
+  /*margin-left: 10px;*/
   color: #cccccc;
   font-size: 13px;
 }

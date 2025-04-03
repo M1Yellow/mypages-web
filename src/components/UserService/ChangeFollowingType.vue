@@ -3,15 +3,15 @@
     <el-dialog title="变更分组" v-model="getDialogVisible" :top="`7vh`"
                :before-close="beforeClose"
                :destroy-on-close="true">
-      <el-form ref="changeFollowingTypeForm" :model="userFollowingRelation">
+      <el-form ref="changeFollowingTypeForm" :model="userFollowingRelation" label-position="right" label-width="auto">
         <el-form-item label="用户名">
           <el-input class="change_following_type_name" maxlength="20" show-word-limit autosize disabled
-                    v-model="userFollowingRelation.name"></el-input>
+                    v-model="userFollowingRelation.name" size="large"></el-input>
         </el-form-item>
         <el-form-item label="平台">
           <el-select class="change_following_type_select change_following_type_platform_list"
                      v-model="userFollowingRelation.platformId"
-                     placeholder="-请选择-" disabled>
+                     placeholder="-请选择-" size="large" disabled>
             <el-option v-for="platformItem in platformList" :label="platformItem.name"
                        :value="platformItem.platformId"></el-option>
           </el-select>
@@ -19,16 +19,20 @@
         </el-form-item>
         <el-form-item label="类型">
           <el-select class="change_following_type_select change_following_type_list"
-                     v-model="userFollowingRelation.typeId" placeholder="-请选择-">
+                     v-model="userFollowingRelation.typeId" placeholder="-请选择-" size="large">
             <el-option v-for="typeItem in typeList" :label="typeItem.typeName" :value="typeItem.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="排序优先级">
+          <!--
           <el-select class="change_following_type_select change_following_type_sort"
                      v-model="userFollowingRelation.sortNo" placeholder="-请选择-">
             <el-option v-for="val in sortValues" :label="val" :value="val"></el-option>
           </el-select>
-          <span class="change_following_type_desc">（决定类型的显示顺序，10：优先级最高）</span>
+          -->
+          <el-input class="change_following_type_select change_following_type_sort" maxlength="3" show-word-limit autosize
+                    v-model="userFollowingRelation.sortNo" placeholder="0~100" size="large"></el-input>
+          <span class="change_following_type_desc">（优先级由低到高：0~100）</span>
         </el-form-item>
         <el-form-item class="func_btn_area">
           <el-button type="primary" class="func_btn_submit" @click="onSubmit('changeFollowingTypeForm')">确认</el-button>
@@ -180,6 +184,15 @@ export default {
         this.$message.error('类型id错误');
         return false;
       }
+      if (!this.userFollowingRelation.sortNo) {
+        //this.$message.error('优先级不能为空');
+        //return false;
+        this.userFollowingRelation.sortNo = 50;
+      }
+      if (!/^[0-9]*$/.test(this.userFollowingRelation.sortNo) || this.userFollowingRelation.sortNo < 0 || this.userFollowingRelation.sortNo > 100) {
+        this.$message.error('优先级范围：0~100');
+        return false;
+      }
 
       // 清空不需要的字段值
       if (this.userFollowingRelation.createTime)
@@ -273,7 +286,7 @@ export default {
 
 /* 补充说明样式 */
 .change_following_type_desc {
-  margin-left: 10px;
+  /*margin-left: 10px;*/
   color: #cccccc;
   font-size: 13px;
 }

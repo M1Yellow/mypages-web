@@ -243,6 +243,7 @@ export default {
   /*display: flex;
   justify-content: center;
   align-items: center;*/
+  margin-top: 4px;
   max-width: 30px;
   vertical-align: middle;
 }

@@ -7,14 +7,18 @@
         <el-form-item label="观点内容">
           <el-input class="add_opinion_content" type="textarea" :autosize="{ minRows: 2, maxRows: 10 }" maxlength="500"
                     show-word-limit
-                    prop="opinionContent" v-model="userOpinion.opinionContent"></el-input>
+                    prop="opinionContent" v-model="userOpinion.opinionContent" size="large"></el-input>
         </el-form-item>
         <el-form-item label="排序优先级">
+          <!--
           <el-select class="add_opinion_select add_opinion_sort"
                      v-model="userOpinion.sortNo" placeholder="-请选择-">
             <el-option v-for="val in sortValues" :label="val" :value="val"></el-option>
           </el-select>
-          <span class="add_opinion_desc">（决定类型的显示顺序，10：优先级最高）</span>
+          -->
+          <el-input class="add_opinion_select add_opinion_sort" maxlength="3" show-word-limit autosize
+                    v-model="userOpinion.sortNo" placeholder="0~100" size="large"></el-input>
+          <span class="add_opinion_desc">（优先级由低到高：0~100）</span>
         </el-form-item>
         <el-form-item class="func_btn_area">
           <el-button type="primary" class="func_btn_submit" @click="onSubmit('addOpinionForm')">确认</el-button>
@@ -47,8 +51,8 @@ export default {
         opinionType: null,
         // 观点内容
         opinionContent: null,
-        // 页面显示优先级，由低到高：1-10，默认5
-        sortNo: 5,
+        // 排序优先级
+        sortNo: 50,
       },
       // 平台列表
       platformList: [],
@@ -157,6 +161,15 @@ export default {
         this.$message.error('观点内容不能为空');
         return false;
       }
+      if (!this.userOpinion.sortNo) {
+        //this.$message.error('优先级不能为空');
+        //return false;
+        this.userOpinion.sortNo = 50;
+      }
+      if (!/^[0-9]*$/.test(this.userOpinion.sortNo) || this.userOpinion.sortNo < 0 || this.userOpinion.sortNo > 100) {
+        this.$message.error('优先级范围：0~100');
+        return false;
+      }
 
       // 处理不需要的参数
       if (this.userOpinion.createTime)
@@ -255,7 +268,7 @@ export default {
 
 /* 补充说明样式 */
 .add_opinion_desc {
-  margin-left: 10px;
+  /*margin-left: 10px;*/
   color: #cccccc;
   font-size: 13px;
 }

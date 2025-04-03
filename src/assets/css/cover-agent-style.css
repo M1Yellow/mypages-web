@@ -105,7 +105,7 @@ i {
 /* 更多操作按钮 */
 .more_func {
     display: flex !important;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     flex-wrap: nowrap;
     align-content: center;

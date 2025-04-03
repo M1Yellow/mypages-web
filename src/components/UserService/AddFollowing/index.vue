@@ -10,11 +10,11 @@
             <el-radio :value="true">用户</el-radio>
             <el-radio :value="false">非用户</el-radio>
           </el-radio-group>
-          <span class="add_following_desc">（非用户须手动录入信息，注意别都选用户）</span>
+          <span class="add_following_desc">（非用户须手动录入信息）</span>
         </el-form-item>
         <el-form-item class="add_following_form_item" label="用户名" prop="name">
           <el-input class="add_following_name" maxlength="20" show-word-limit autosize
-                    v-model="userFollowing.name" placeholder="可以不填" size="large"></el-input>
+                    v-model="userFollowing.name" placeholder="momo" size="large"></el-input>
         </el-form-item>
         <el-form-item class="add_following_form_item" label="用户主页" prop="mainPage">
           <el-input class="add_following_homepage" maxlength="200" show-word-limit autosize
@@ -31,10 +31,14 @@
           </el-select>
         </el-form-item>
         <el-form-item class="add_following_form_item" label="排序优先级" prop="sortNo">
+          <!---
           <el-select class="add_following_sort" v-model="userFollowing.sortNo" placeholder="-请选择-" size="large">
             <el-option v-for="val in sortValues" :label="val" :value="val"></el-option>
           </el-select>
-          <span class="add_following_desc">（决定用户的显示顺序，10：优先级最高）</span>
+          -->
+          <el-input class="add_following_sort" maxlength="3" show-word-limit autosize
+                    v-model="userFollowing.sortNo" placeholder="0~100" size="large"></el-input>
+          <span class="add_following_desc">（优先级由低到高：0~100）</span>
         </el-form-item>
         <el-form-item class="add_following_form_item add_following_remark_form_item" label="标签备注" v-model="userFollowing.remarkList">
           <el-tag
@@ -110,12 +114,25 @@ export default {
   props: [],
   inject: ['reload'],
   data() {
-    let validateUrl = (rule, value, callback) => {
-      if (value.trim() === '') {
+    const validateUrl = (rule, value, callback) => {
+      if (!value) {
         //callback(new Error('用户主页不能为空'));
+        callback();
       } else {
         if (!validateURL(value)) {
           callback(new Error('请输入正确的网页地址'));
+        }
+        callback();
+      }
+    };
+    const validateSortNo = (rule, value, callback) => {
+      if (!value) {
+        //callback(new Error('优先级不能为空'));
+        callback();
+      } else {
+        const age= /^[0-9]*$/;
+        if (!age.test(value) || value < 0 || value > 100) {
+          callback(new Error('优先级范围：0~100'));
         }
         callback();
       }
@@ -145,8 +162,8 @@ export default {
         signature: null,
         // 是否为用户
         isUser: true,
-        // 页面显示优先级，由低到高：1-10，默认5
-        sortNo: 5,
+        // 优先级由低到高：0~100，默认50
+        sortNo: 50,
         // 是否删除，默认 false
         isDeleted: false,
         // 关联用户标签列表
@@ -185,6 +202,10 @@ export default {
           //{max: 100, message: '长度不超过 100 个字符', trigger: 'blur'}
           // 使用自定义校验
           {validator: validateUrl, trigger: ['blur', 'change']}
+        ],
+        sortNo: [
+          //{required: true, message: '优先级不能为空', trigger: 'blur'},
+          {validator: validateSortNo, trigger: ['blur', 'change']}
         ]
       }
     }
@@ -319,6 +340,15 @@ export default {
       }
       if (!validateURL(this.userFollowing.mainPage)) {
         //this.$message.error('请输入正确的网页地址');
+        return false;
+      }
+      if (!this.userFollowing.sortNo) {
+        //this.$message.error('优先级不能为空');
+        //return false;
+        this.userFollowing.sortNo = 50;
+      }
+      if (!/^[0-9]*$/.test(this.userFollowing.sortNo) || this.userFollowing.sortNo < 0 || this.userFollowing.sortNo > 100) {
+        //this.$message.error('优先级范围：0~100');
         return false;
       }
       if (!this.userFollowing.isUser && !this.isFileSelected && !this.userFollowing.profilePhoto) {
@@ -698,7 +728,7 @@ export default {
 
 /* 补充说明样式 */
 .add_following_desc {
-  margin-left: 10px;
+  /*margin-left: 5px;*/
   color: #cccccc;
   font-size: 13px;
 }
