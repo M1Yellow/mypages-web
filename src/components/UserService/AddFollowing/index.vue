@@ -10,7 +10,7 @@
             <el-radio :value="true">用户</el-radio>
             <el-radio :value="false">非用户</el-radio>
           </el-radio-group>
-          <span class="add_following_desc">（非用户须手动录入信息）</span>
+          <span class="add_following_desc"></span>
         </el-form-item>
         <el-form-item class="add_following_form_item" label="用户名" prop="name">
           <el-input class="add_following_name" maxlength="20" show-word-limit autosize

@@ -145,6 +145,7 @@ export default {
     },
     scrollToByTag(index, pName) {
       this.active = index;
+      //alert(">>>> this.active:" + this.active);
       location.hash = pName;
       this.changeUrl();
       this.showAddPlatform();

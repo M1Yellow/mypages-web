@@ -3,43 +3,41 @@
     <el-row>
       <el-col :span="23"
         :id="(platformBaseInfo.platformId === defaultPlatformId && !needLogin) ? 'platform_user_header' : null">
-        <!-- 默认平台-头像显示 -->
-        <span v-if="platformBaseInfo.platformId === defaultPlatformId">
-          <!-- 需要登录 -->
-          <span v-if="needLogin">
-            <a v-on:click="showLogin()" title="请登录">
+        <div class="platform_logo_name_display">
+          <!-- 默认平台-头像显示 -->
+          <span v-if="platformBaseInfo.platformId === defaultPlatformId" class="platform_logo_user_area">
+            <!-- 需要登录 -->
+            <a v-if="needLogin" v-on:click="showLogin()" title="请登录">
               <img v-if="platformBaseInfo.platformLogo" class="platform_logo"
                 v-bind:src="baseApi + platformBaseInfo.platformLogo" />
             </a>
-          </span>
-          <!-- 已经登录 -->
-          <span v-else class="user_profile_area">
-            <a v-if="platformBaseInfo.mainPage" v-bind:href="platformBaseInfo.mainPage" target="_self">
+            <!-- 已经登录 -->
+            <a v-else v-bind:href="platformBaseInfo.mainPage" target="_self">
               <el-avatar v-if="userInfo && userInfo.profilePhoto" :size="50" shape="circle" fit="fill">
                 <img class="user_profile" v-bind:src="baseApi + userInfo.profilePhoto" />
               </el-avatar>
             </a>
           </span>
-        </span>
-        <!-- 后续添加的平台-头像显示 -->
-        <span v-else>
-          <a v-if="platformBaseInfo.mainPage" v-bind:href="platformBaseInfo.mainPage" title="前往站点" target="_blank">
-            <img v-if="platformBaseInfo.platformLogo" class="platform_logo"
-              v-bind:src="baseApi + platformBaseInfo.platformLogo" />
-          </a>
-        </span>
+          <!-- 后续添加的平台-头像显示 -->
+          <span v-else class="platform_logo_area">
+            <a v-if="platformBaseInfo.mainPage" v-bind:href="platformBaseInfo.mainPage" title="前往站点" target="_blank">
+              <img v-if="platformBaseInfo.platformLogo" class="platform_logo"
+                v-bind:src="baseApi + platformBaseInfo.platformLogo" />
+            </a>
+          </span>
 
-        <!-- 默认平台-名称显示 -->
-        <span v-if="platformBaseInfo.platformId === defaultPlatformId" class="platform_name"
-          :id="needLogin ? 'platform_name_need_login' : 'platform_name_after_login'" :title="needLogin ? '登录' : '点我试试'"
-          v-on:click="showLogin()">
-          {{ needLogin ? '请登录' : (userInfo.userName ? userInfo.userName : platformBaseInfo.name) }}
-        </span>
-        <!-- 后续添加的平台-名称显示 -->
-        <span v-else-if="platformBaseInfo.name" class="platform_name" title="点我试试"
-          v-on:click="platformNameShow = !platformNameShow">
-          {{ platformBaseInfo.name }}
-        </span>
+          <!-- 默认平台-名称显示 -->
+          <span v-if="platformBaseInfo.platformId === defaultPlatformId" class="platform_name"
+            :id="needLogin ? 'platform_name_need_login' : 'platform_name_after_login'" :title="needLogin ? '登录' : '点我试试'"
+            v-on:click="showLogin()">
+            {{ needLogin ? '请登录' : (userInfo.userName ? userInfo.userName : platformBaseInfo.name) }}
+          </span>
+          <!-- 后续添加的平台-名称显示 -->
+          <span v-else-if="platformBaseInfo.name" class="platform_name" title="点我试试"
+            v-on:click="platformNameShow = !platformNameShow">
+            {{ platformBaseInfo.name }}
+          </span>
+        </div>
       </el-col>
       <el-col :span="1" class="more_func">
         <el-dropdown v-if="platformNameShow">
@@ -234,16 +232,40 @@ export default {
 <style scoped>
 .platform_name_area {
   text-align: left;
+  line-height: 30px;
   font-size: 30px;
   font-weight: bold;
   padding: 10px 15px 10px 15px;
 }
 
+.platform_logo_name_display {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.platform_logo_user_area {
+  display: contents;
+}
+.platform_logo_user_area>a {
+  display: contents;
+}
+
+.platform_logo_area {
+  display: contents;
+}
+.platform_logo_area>a {
+  display: contents;
+}
+
 .platform_logo {
   /*display: flex;
   justify-content: center;
-  align-items: center;*/
-  margin-top: 4px;
+  align-items: center;
+  margin-top: 4px;*/
   max-width: 30px;
   vertical-align: middle;
 }
@@ -255,6 +277,8 @@ export default {
 }
 
 #platform_name_after_login {
+  vertical-align: middle;
+  line-height: 20px;
   font-size: 20px;
   font-weight: bold;
   padding-left: 10px;
@@ -262,6 +286,8 @@ export default {
 }
 
 #platform_name_need_login {
+  vertical-align: middle;
+  line-height: 20px;
   font-size: 20px;
   font-weight: bold;
   padding-left: 10px;

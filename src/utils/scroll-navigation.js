@@ -46,6 +46,18 @@ export function onScroll(contents, navElem, menuItem) {
         navElem.style.top = 10 + 'px';
     }
 
+    // 判断滚动条是否到底部
+    // 获取滚动条在Y轴上的滚动距离
+    //let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    // 获取可视区域的高度
+    let clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+    // 获取内容的总高度
+    let scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+
+    if(scrollHeight > clientHeight && scrollTop + clientHeight >= scrollHeight) {
+        navIndex = offsetTopArr.length - 1;
+    }
+
     // 返回当前 active 菜单下标
     return navIndex;
 }
